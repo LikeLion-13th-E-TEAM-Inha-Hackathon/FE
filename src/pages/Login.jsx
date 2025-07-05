@@ -16,13 +16,15 @@ function Login(){
       setMessage("이메일과 비밀번호를 모두 입력해주세요.");
       return;}
 
+    navigate("/select");
+
     };
 
 
   return (
     <div className="login-background">
      <form onSubmit={handleLogin} className="login-container">
-       <h2 className="login-title">🔐로그인</h2>
+       <h2 className="login-title">🔐 패밀로그 로그인</h2>
        <input
          type="email"
          value={email}
@@ -40,7 +42,8 @@ function Login(){
          required
        />
        <button type="submit" className="login-button">로그인</button>
-      {message && <p className="login-message">{message}</p>}
+       {message && <p className="login-message">{message}</p>}
+       <p className="signup-link" onClick={() => navigate('/signup')}>아직 회원이 아니신가요? 회원가입 하기</p>
     </form>
     </div>
   );

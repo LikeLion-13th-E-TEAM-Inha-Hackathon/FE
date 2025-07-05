@@ -1,6 +1,16 @@
-.login-background{
-    background-color: #FEF6DF;
+html, body, #root {
+  height: 100%;
+  margin: 0;
 }
+
+.login-background {
+  background-color: #FEF6DF;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .login-container {
     display: flex;
@@ -11,11 +21,11 @@
     align-items: center;    
     max-width: 20vw;
     padding: 40px;
+    max-width: 400px;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 15px;
     background-color: #ffffff;
-    margin-left: 35vw;
-    margin-top: 10vh;
   }
   
   .login-container h2 {
@@ -36,7 +46,7 @@
     font-size: 16px;
     margin-top: 10px;
     cursor: pointer;
-    background-color: #e2bddd;
+    background-color: #7fb14a;
     color: white;
     border: none;
     border-radius: 8px;
@@ -47,3 +57,13 @@
     text-align: center;
   }
   
+  .signup-link {
+  color: #000000;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.signup-link:hover {
+  color: #444;
+}

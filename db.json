@@ -1,0 +1,49 @@
+{
+  "questions": [
+    {
+      "id": "1",
+      "familyCode": "family001",
+      "content": "오늘 가장 기분 좋았던 순간은?",
+      "date": "2025-07-05"
+    },
+    {
+      "id": "2",
+      "familyCode": "family002",
+      "content": "요즘 가장 행복한 일은 무엇인가요?",
+      "date": "2025-07-05"
+    }
+  ],
+  "answers": [
+    {
+      "id": "1",
+      "questionId": 1,
+      "memberId": "user123",
+      "nickname": "엄마",
+      "content": "커피 마시면서 창밖을 볼 때"
+    },
+    {
+      "id": "2",
+      "questionId": 1,
+      "memberId": "user456",
+      "nickname": "아빠",
+      "content": "아이들과 놀아줄 때"
+    },
+    {
+      "id": "4d80",
+      "questionId": "1",
+      "content": "ds"
+    }
+  ],
+  "points": [
+    {
+      "familyCode": "family001",
+      "points": 300,
+      "id": "cb23"
+    },
+    {
+      "familyCode": "family002",
+      "points": 150,
+      "id": "8a1a"
+    }
+  ]
+}
