@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+
+  background-color: #FEF6DF;
+}
+
+.family-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #FEF6DF;
+  padding: 1rem;
+}
+
+.family-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.family-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.family-label {
+  font-weight: 500;
+  margin: 1.5rem 0 0.5rem;
+  text-align: left;
+}
+
+.family-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.family-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.family-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.family-btn {
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #7fb14a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.family-btn.selected {
+  background-color: #628937;
+}
+
+.family-submit {
+  background-color: #7fb14a;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 0.6rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.family-error {
+  margin-top: 1rem;
+  color: #c74a4a;
+  font-weight: 500;
+}
+
+.family-code {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}

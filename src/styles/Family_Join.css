@@ -1,0 +1,56 @@
+.join-wrapper {
+  background-color: #fef6df;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.join-container {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.join-title {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.join-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.join-button {
+  background-color: #86b74b;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem;
+  width: 100%;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.join-button:hover {
+  background-color: #6da53e;
+}
+
+.join-error {
+  color: #e74c3c;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
