@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
@@ -9,7 +10,7 @@ function Select() {
   return (
     <div className="login-background">
       <div className="login-container">
-        <h2 className="login-title">👋 어서오세요, {nickname} 님!</h2>
+        <h2 className="login-title">👋 FamiLog에 어서오세요, {nickname} 님!</h2>
         <p className="login-message">무엇을 하시겠어요?</p>
         <div className="login-action">
           <button className="login-button" onClick={() => navigate("/family_create")}>가족 생성</button>
