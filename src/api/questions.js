@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:4000";
 
 // 질문 자동 생성 시 사용할 기본 질문
 const DEFAULT_QUESTION = "오늘 가족 중 누가 가장 멋져 보였나요?";

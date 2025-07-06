@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:4000";
 
 // 답변 가져오기: questionId 기준
 export async function getAnswers(questionId) {

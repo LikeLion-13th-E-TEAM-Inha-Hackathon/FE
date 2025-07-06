@@ -9,6 +9,7 @@ import Select from './pages/Select'
 import Family_Create from './pages/Family_Create'
 import Family_Join from './pages/Family_Join'
 import Home from './pages/Home'
+import Drawer from './pages/Drawer';
 import Profile from './pages/Profile'
 
 export default function AppRoutes() {
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} /> 
         <Route path="/question" element={<Question />} />
+        <Route path="/drawer" element={<Drawer familyCode="family001"/>} />
         <Route path="/select" element={<Select />} />
         <Route path="/family_create" element={<Family_Create />} />
         <Route path="/family_join" element={<Family_Join />} />        

@@ -1,0 +1,91 @@
+.home-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+
+}
+
+.point-display {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.plant-scene {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.window-bg {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 200%;   /* 원하시면 크기 조절 가능 */
+  height: 200%;
+  object-fit: cover;
+  border-radius: 12px;
+  transform: translate(-50%, -50%);
+  z-index: 1;    /* 식물 이미지보다 뒤에 오도록 */
+}
+
+.plant-img {
+  position: absolute;
+  bottom: -300px;               /* 선반 윗면 위치에 따라 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;              
+  z-index: 2;
+  transition: bottom 0.3s ease;
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-50%) rotate(3deg); }
+  50% { transform: translateX(-50%) rotate(-3deg); }
+  75% { transform: translateX(-50%) rotate(2deg); }
+  100% { transform: translateX(-50%) rotate(0deg); }
+}
+
+.drop {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  font-size: 32px;
+  animation: dropAnim 1s ease-out;
+}
+
+@keyframes dropAnim {
+  0% {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, 10px);
+  }
+  100% {
+    transform: translate(-50%, 40px);
+    opacity: 0;
+  }
+}
+
+.water-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative; /* 필요하면 위치 조절 가능 */
+  z-index: 3; /* 위로 올라오도록 */
+  bottom: -345px;
+}
