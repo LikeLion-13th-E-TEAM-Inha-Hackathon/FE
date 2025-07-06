@@ -34,6 +34,16 @@ const navigate = useNavigate();
     }
   };
 
+  const handleCopyCode = () => {
+  navigator.clipboard.writeText(familyCode).then(() => {
+    alert("가족 코드가 복사되었습니다!");
+  }).catch((err) => {
+    alert("복사에 실패했습니다.");
+    console.error(err);
+  });
+};
+
+
   return (
     <div className="profile-wrapper">
       <div className="profile-left">
@@ -50,7 +60,7 @@ const navigate = useNavigate();
       <div className="profile-right">
         <div className="profile-code">
           <span>{user.family} 가족</span>
-          <button className="profile-copy">가족 코드 복사</button>
+          <button onClick={handleCopyCode} className="profile-copy">가족 코드 복사</button>
         </div>
         <hr className="profile-divider" />
 
