@@ -78,14 +78,17 @@
 
 .water-btn {
   margin-top: 16px;
-  padding: 10px 20px;
-  font-size: 16px;
+  margin-bottom: 400px;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 450;
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 1000px;
+  width: 150px;
   cursor: pointer;
-  position: relative; /* 필요하면 위치 조절 가능 */
-  z-index: 3; /* 위로 올라오도록 */
+  position: relative; 
+  z-index: 3; 
   bottom: -345px;
 }

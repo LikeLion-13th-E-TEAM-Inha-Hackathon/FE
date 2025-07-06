@@ -11,7 +11,7 @@ import Family_Join from './pages/Family_Join'
 import Home from './pages/Home'
 import Drawer from './pages/Drawer';
 import Profile from './pages/Profile'
-/*import Drawer from './pages/Drawer'*/
+
 
 
 export default function AppRoutes() {
@@ -23,7 +23,7 @@ export default function AppRoutes() {
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/question" element={<Question />} />
-          {/*<Route path="/drawer" element={<Drawer />} />*/}
+          <Route path="/drawer" element={<Drawer />} />
         </Route>
 
         {/*헤더가 필요없음*/}

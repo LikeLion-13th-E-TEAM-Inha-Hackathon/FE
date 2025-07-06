@@ -1,6 +1,7 @@
 // Home.jsx
 import { useEffect, useState } from "react";
 import { getFamilyPoints, deductFamilyPoints } from "../api/points";
+import Footer from "../components/Footer";
 import "../styles/Home.css";
 
 // 이미지들
@@ -81,7 +82,6 @@ function Home() {
     <div className="home-container">
       <h2>🏡 가족 홈</h2>
       <p className="point-display">현재 가족 포인트: <strong>{points}P</strong></p>
-
       <div className={`plant-scene`}>
         <img src={windowBg} alt="창가 배경" className="window-bg" />
         <img
@@ -91,7 +91,6 @@ function Home() {
         />
         {isWatering && <div className="drop">💧</div>}
       </div>
-
       <button className="water-btn" onClick={handleWater}>
         💧 물주기 (-100P)
       </button>

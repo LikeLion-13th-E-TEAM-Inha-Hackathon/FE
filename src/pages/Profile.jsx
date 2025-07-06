@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import pro from "../assets/pro.png";
+import "../styles/Profile.css";
 
 function Profile() {
 const navigate = useNavigate();
@@ -9,7 +11,7 @@ const navigate = useNavigate();
     role: "딸",
     name: "소소소",
     email: "aaa@gmail.com",
-    family: "ㅇㅇ가족",
+    family: "ㅇㅇ",
   };
 
   const members = [
@@ -26,7 +28,7 @@ const navigate = useNavigate();
 
   const handleDelete = () => {
     if (window.confirm("정말 회원 탈퇴 하시겠습니까?")) {
-      // 여기에 회원 탈퇴 요청 API 추가 가능
+      // 여기에 회원 탈퇴 요청 (회원 정보 삭제) API 추가 가능
       localStorage.clear();
       navigate("/");
     }
@@ -35,34 +37,26 @@ const navigate = useNavigate();
   return (
     <div className="profile-wrapper">
       <div className="profile-left">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Face-smile.svg/1024px-Face-smile.svg.png"
-          alt="profile"
-          className="profile-img"
-        />
+        <img src={pro} alt="profile-user" className="profile-user" />
         <div className="profile-info">
-          <strong>{user.family} {user.name}님</strong>
+          <strong>{user.family}가족 {user.name}님</strong>
           <p>{user.email}</p>
         </div>
 
-        <button onClick={handleLogout} className="profile-btn">로그아웃</button>
-        <button onClick={handleDelete} className="profile-btn">회원 탈퇴</button>
+        <button onClick={handleLogout} className="profile-btn1">로그아웃</button>
+        <button onClick={handleDelete} className="profile-btn2">회원 탈퇴</button>
       </div>
 
       <div className="profile-right">
-        <div className="profile-code-header">
-          <span>{user.family}</span>
+        <div className="profile-code">
+          <span>{user.family} 가족</span>
           <button className="profile-copy">가족 코드 복사</button>
         </div>
         <hr className="profile-divider" />
 
         {members.map((m, i) => (
-          <div className="profile-member" key={i}>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Face-smile.svg/1024px-Face-smile.svg.png"
-              alt="member"
-              className="profile-img"
-            />
+          <div className="profile-members" key={i}>
+            <img src={pro} alt="profile-member" className="profile-member" />
             <div className="profile-info">
               <strong>{m.role} {m.name}님</strong>
               <p>{m.email}</p>
