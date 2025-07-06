@@ -22,7 +22,9 @@ function Home() {
   const [points, setPoints] = useState(0);
   const [wateringCount, setWateringCount] = useState(0);
   const [plantImage, setPlantImage] = useState(stage1);
+  const [plantStage, setPlantStage] = useState(1);
   const [isWatering, setIsWatering] = useState(false);
+  
 
   useEffect(() => {
     fetchPoints();
@@ -63,39 +65,52 @@ function Home() {
   };
 
   const updatePlantImage = () => {
-    let img = stage1;
-    if (wateringCount >= 3 && wateringCount < 5) {
-      img = stage2;
-    } else if (wateringCount >= 5 && wateringCount < 7) {
-      if (plantType === "sunflower") img = sunflower3;
-      else if (plantType === "strawberry") img = strawberry3;
-      else if (plantType === "tomato") img = tomato3;
-    } else if (wateringCount >= 7) {
-      if (plantType === "sunflower") img = sunflower4;
-      else if (plantType === "strawberry") img = strawberry4;
-      else if (plantType === "tomato") img = tomato4;
-    }
-    setPlantImage(img);
-  };
+  let img = stage1;
+  let stage = 1;
+
+  if (wateringCount >= 3 && wateringCount < 5) {
+    img = stage2;
+    stage = 2;
+  } else if (wateringCount >= 5 && wateringCount < 7) {
+    stage = 3;
+    if (plantType === "sunflower") img = sunflower3;
+    else if (plantType === "strawberry") img = strawberry3;
+    else if (plantType === "tomato") img = tomato3;
+  } else if (wateringCount >= 7) {
+    stage = 4;
+    if (plantType === "sunflower") img = sunflower4;
+    else if (plantType === "strawberry") img = strawberry4;
+    else if (plantType === "tomato") img = tomato4;
+  }
+
+  setPlantImage(img);
+  setPlantStage(stage);
+};
 
   return (
     <div className="home-container">
-      <h2>🏡 가족 홈</h2>
-      <p className="point-display">현재 가족 포인트: <strong>{points}P</strong></p>
-      <div className={`plant-scene`}>
-        <img src={windowBg} alt="창가 배경" className="window-bg" />
-        <img
-          src={plantImage}
-          alt="화분"
-          className={`plant-img ${isWatering ? "shake" : ""}`}
-        />
-        {isWatering && <div className="drop">💧</div>}
-      </div>
-      <button className="water-btn" onClick={handleWater}>
-        💧 물주기 (-100P)
-      </button>
+  <h2>🏡 가족 홈</h2>
+  <p className="point-display">
+    현재 가족 포인트: <strong>{points}P</strong>
+  </p>
 
-    </div>
+  <div className="plant-scene">
+    <img src={windowBg} alt="창가 배경" className="window-bg" />
+    
+    <img
+      src={plantImage}
+      alt="화분"
+      className={`plant-img plant-stage${plantStage} ${isWatering ? "shake" : ""}`}
+    />
+
+    {isWatering && <div className="drop">💧</div>}
+  </div>
+
+  <button className="water-btn" onClick={handleWater}>
+    💧 물주기 (-100P)
+  </button>
+</div>
+
   );
 }
 

@@ -31,15 +31,34 @@
   z-index: 1;    /* 식물 이미지보다 뒤에 오도록 */
 }
 
+/* 공통 화분 스타일은 그대로 유지 */
 .plant-img {
   position: absolute;
-  bottom: -300px;               /* 선반 윗면 위치에 따라 조정 */
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;              
   z-index: 2;
-  transition: bottom 0.3s ease;
+  transition: bottom 0.3s ease, width 0.3s ease;
 }
+
+/* 기본 위치 */
+.plant-stage1,
+.plant-stage2 {
+  bottom: -300px;
+  width: 160px;
+}
+
+/* stage 3는 조금 위로 올리고 크기도 키움 */
+.plant-stage3 {
+  bottom: -270px;
+  width: 180px;
+}
+
+/* stage 4는 더 위로 올리고 더 큼 */
+.plant-stage4 {
+  bottom: -270px;
+  width: 200px;
+}
+
 
 .shake {
   animation: shake 0.5s;
@@ -55,9 +74,10 @@
 
 .drop {
   position: absolute;
-  top: 10px;
+  top: 250px;
   left: 50%;
   font-size: 32px;
+  z-index:3 ;
   animation: dropAnim 1s ease-out;
 }
 
