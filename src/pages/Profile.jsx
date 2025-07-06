@@ -1,23 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { fetchUserInfo } from "../api/user";
 import pro from "../assets/pro.png";
 import "../styles/Profile.css";
 
 function Profile() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [familyMembers, setFamilyMembers] = useState([]);
+  const [familyCode, setFamilyCode] = useState("");
 
-  const user = {
-    role: "딸",
-    name: "소소소",
-    email: "aaa@gmail.com",
-    family: "ㅇㅇ",
-  };
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
 
-  const members = [
-    { role: "아빠", name: "소소소", email: "Aaa13@gmail.com" },
-    { role: "엄마", name: "ㅂㅂㅂ", email: "Abx3@gmail.com" },
-  ];
+    fetchUserInfo(userId)
+      .then((data) => {
+        setUser(data.user);
+        setFamilyMembers(data.members);
+        setFamilyCode(data.familyCode);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const handleLogout = () => {
     if (window.confirm("정말 로그아웃 하시겠습니까?")) {
@@ -26,22 +31,19 @@ const navigate = useNavigate();
     }
   };
 
-  const handleDelete = () => {
+  const handleLeave = () => {
     if (window.confirm("정말 회원 탈퇴 하시겠습니까?")) {
-      // 여기에 회원 탈퇴 요청 (회원 정보 삭제) API 추가 가능
       localStorage.clear();
       navigate("/");
     }
   };
 
-  const handleCopyCode = () => {
-  navigator.clipboard.writeText(familyCode).then(() => {
+  const handleCopy = () => {
+    navigator.clipboard.writeText(familyCode);
     alert("가족 코드가 복사되었습니다!");
-  }).catch((err) => {
-    alert("복사에 실패했습니다.");
-    console.error(err);
-  });
-};
+  };
+
+  if (!user) return <div className="profile-loading">불러오는 중...</div>;
 
 
   return (
@@ -54,13 +56,13 @@ const navigate = useNavigate();
         </div>
 
         <button onClick={handleLogout} className="profile-btn1">로그아웃</button>
-        <button onClick={handleDelete} className="profile-btn2">회원 탈퇴</button>
+        <button onClick={handleLeave} className="profile-btn2">회원 탈퇴</button>
       </div>
 
       <div className="profile-right">
         <div className="profile-code">
           <span>{user.family} 가족</span>
-          <button onClick={handleCopyCode} className="profile-copy">가족 코드 복사</button>
+          <button onClick={handleCopy} className="profile-copy">가족 코드 복사</button>
         </div>
         <hr className="profile-divider" />
 

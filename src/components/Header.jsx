@@ -7,8 +7,8 @@ import "../styles/Header.css";
 
 function Header() {
   const navigate = useNavigate();
-  const familyName = localStorage.getItem("familyName") || "우리";
-  const nickname = localStorage.getItem("nickname") || "사용자";
+  const familyName = localStorage.getItem("familyName");
+  const nickname = localStorage.getItem("nickname");
 
   return (
     <header className="header-container">

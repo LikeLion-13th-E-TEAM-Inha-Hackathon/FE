@@ -19,17 +19,36 @@ function Family_Create() {
 
   const plants = ["방울 토마토", "해바라기", "딸기"];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedRole || !familyName || !selectedPlant) {
       setMessage("모든 항목을 입력해주세요.");
       setShowCode(false);
       return;
     }
 
-    const code = Math.floor(100000 + Math.random() * 900000);
-    setGeneratedCode(code);
-    setShowCode(true);
-    setMessage("");
+        try {
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const userId = localStorage.getItem("userId");
+
+      const res = await createFamily({
+        name: familyName,
+        code,
+        plant: selectedPlant,
+        role: selectedRole,
+        userId
+      });
+
+      setGeneratedCode(res.code);
+      setShowCode(true);
+      setMessage("");
+      localStorage.setItem("familyCode", res.code);
+      localStorage.setItem("familyName", familyName);
+    } catch (err) {
+      setMessage("가족 생성에 실패했습니다. 이미 존재하거나 오류가 발생했습니다.");
+      setShowCode(false);
+    }
+    
+
   };
 
   return (

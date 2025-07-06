@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 import '../styles/Login.css'
 
 function Login(){
@@ -14,9 +15,18 @@ function Login(){
 
     if (!email || !password) {
       setMessage("이메일과 비밀번호를 모두 입력해주세요.");
-      return;}
+      return;
+    }
 
-    navigate("/select");
+    try {
+      const data = await login(email, password);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("email", email);
+      navigate("/select");
+    } catch (err) {
+      setMessage("로그인 실패 : 이메일 또는 비밀번호가 잘못되었습니다.");
+    }
 
     };
 
