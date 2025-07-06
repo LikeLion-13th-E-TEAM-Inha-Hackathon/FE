@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:4000";
 
 // 가족 포인트 조회
 export async function getFamilyPoints(familyCode) {
