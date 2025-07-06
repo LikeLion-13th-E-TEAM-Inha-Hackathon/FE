@@ -20,7 +20,7 @@ function Intro(){
             <button onClick={()=>navigate('/SignUp')} className="intro-signup">회원가입</button>
         </div>
         <div className="intro-bottom">
-          <p>© 2025 Team FamilEE</p>
+          <p>© 2025 FamilEE. All rights reserved.</p>
         </div>
       </div>
 
