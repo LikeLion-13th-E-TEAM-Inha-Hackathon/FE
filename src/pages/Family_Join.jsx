@@ -9,7 +9,7 @@ function Family_Join() {
   const navigate = useNavigate();
 
   const checkFamilyCode = async (code) => {
-    const res = await axios.get(`https://familog-be.onrender.com/families/${code}`);
+    const res = await  axios.post(`https://familog-be.onrender.com/families/${code}/join/`);
     if (res.data.length > 0) {
       return {
         exists: true,
