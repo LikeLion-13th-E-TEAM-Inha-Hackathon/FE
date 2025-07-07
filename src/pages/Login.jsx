@@ -34,9 +34,13 @@ function Login() {
       // ✅ axios 기본 헤더 설정 (다음 요청부터 인증 포함)
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
 
-      // ✅ 리디렉션
-      navigate("/home");  // or /select if 가족 정보 없을 때 처리 추가 가능
-
+      if (data.code) {
+        localStorage.setItem("familyCode", data.code);
+        navigate("/home");
+      } else {
+        navigate("/select")
+      }
+      
     } catch (err) {
       console.error("로그인 오류:", err);
       setMessage("로그인 실패 : 이메일 또는 비밀번호가 잘못되었습니다.");
