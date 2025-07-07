@@ -8,22 +8,21 @@ function Family_Join() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // 가족 코드 확인
   const checkFamilyCode = async (code) => {
     const res = await axios.get(`https://familog-be.onrender.com/families/${code}`);
     if (res.data.length > 0) {
       return {
         exists: true,
-        name: res.data[0].name, // 가족 이름
+        name: res.data[0].name,
       };
     }
     return { exists: false };
   };
 
-  // 가족 참여
-  const joinFamily = async ({ code }) => {
-    return await axios.post(`https://familog-be.onrender.com/families/${code}/join`, {
-      familyCode: code
+  const joinFamily = async ({ code, userId }) => {
+    return await axios.post(`https://familog-be.onrender.com/families/${code}/join/`, {
+      familyCode: code,
+      userId: userId,
     });
   };
 
@@ -35,12 +34,12 @@ function Family_Join() {
     }
 
     const code = inputCode.trim();
-    if (!code) {
+    if (!code || code === "undefined") {
       setError("가족 코드를 입력해주세요.");
       return;
     }
 
-      try {
+    try {
       const check = await checkFamilyCode(code);
 
       if (!check.exists) {
@@ -71,7 +70,7 @@ function Family_Join() {
           value={inputCode}
           onChange={(e) => setInputCode(e.target.value)}
         />
-        <button className="join-button" onClick={joinFamily}>
+        <button className="join-button" onClick={handleSubmit}>
           참여하기
         </button>
         {error && <p className="join-error">{error}</p>}
