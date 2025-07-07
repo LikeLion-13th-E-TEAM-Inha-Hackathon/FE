@@ -10,7 +10,7 @@ function Family_Join() {
 
   // 가족 코드 확인
   const checkFamilyCode = async (code) => {
-    const res = await axios.get(`https://familog-be.onrender.com/families?code=${code}`);
+    const res = await axios.get(`https://familog-be.onrender.com/families/${code}`);
     if (res.data.length > 0) {
       return {
         exists: true,
@@ -22,7 +22,7 @@ function Family_Join() {
 
   // 가족 참여
   const joinFamily = async ({ code, userId }) => {
-    return await axios.post(`https://familog-be.onrender.com/families?code=${code}/join`, {
+    return await axios.post(`https://familog-be.onrender.com/families/${code}/join`, {
       familyCode: code,
       userId: userId,
     });
