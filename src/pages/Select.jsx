@@ -5,7 +5,7 @@ import "../styles/Login.css";
 
 function Select() {
   const navigate = useNavigate();
-  const nickname = localStorage.getItem("nickname") || "사용자";
+  const nickname = localStorage.getItem("nickname");
 
   return (
     <div className="login-background">

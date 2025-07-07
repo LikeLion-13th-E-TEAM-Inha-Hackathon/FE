@@ -4,18 +4,33 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Family_Join.css";
 
 function Family_Join() {
-    const [inputCode, setInputCode] = useState("");
+  const [inputCode, setInputCode] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    const savedCode = localStorage.getItem("familyCode");
-
-    if (inputCode === savedCode) {
-      navigate("/home");
-    } else {
-      setError("존재하지 않는 코드입니다. 다시 확인해주세요.");
+  const handleSubmit = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setMessage("로그인이 필요합니다.");
+      return;
     }
+
+    try {
+      const check = await checkFamilyCode(code);
+
+      if (!check.exists) {
+        setMessage("존재하지 않는 가족 코드입니다.");
+        return;
+      }
+
+      await joinFamily({ code, userId });
+      localStorage.setItem("familyCode", code);
+      localStorage.setItem("familyName", check.name);
+      navigate("/home");
+    } catch (err) {
+      setError("오류가 발생했습니다. 다시 시도해주세요.");
+    }
+    
   };
 
   return (

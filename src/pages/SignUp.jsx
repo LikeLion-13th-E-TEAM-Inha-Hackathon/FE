@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { signUp } from "../api/auth";
 import "../styles/Login.css";
 
 function SignUp() {
@@ -11,20 +12,39 @@ function SignUp() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSignUp = () => {
-    if (!nickname || !email || !password || !confirmPassword) {
-      setMessage("모든 칸을 입력해주세요.");
-      return;
-    }
+const handleSignUp = async () => {
+  if (!nickname || !email || !password || !confirmPassword) {
+    setMessage("모든 칸을 입력해주세요.");
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      setMessage("비밀번호가 일치하지 않습니다.");
-      return;
-    }
+  if (password !== confirmPassword) {
+    setMessage("비밀번호가 일치하지 않습니다.");
+    return;
+  }
 
-    console.log("회원가입 정보:", { nickname, email, password });
-    navigate("/select");
-  };
+    try {
+      const emailCheck = await checkEmail(email);
+      if (emailCheck.exists) {
+        setMessage("중복된 이메일입니다.");
+        return;
+      }
+
+      const pwCheck = await checkPassword(password);
+      if (pwCheck.exists) {
+        setMessage("중복된 비밀번호입니다.");
+        return;
+      }
+
+      const data = await signUp(email, password, nickname);
+      console.log("userId:", data.userId);
+      alert("회원가입 성공!");
+      navigate("/login");
+    } catch (err) {
+      setMessage("회원가입 실패");
+    }
+};
+
 
   return (
     <div className="login-background">
