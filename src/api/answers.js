@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:4000";
+import axios from "axios";
+
+const BASE_URL = "https://familog-be.onrender.com";
 
 // 답변 가져오기: questionId 기준
 export async function getAnswers(questionId) {

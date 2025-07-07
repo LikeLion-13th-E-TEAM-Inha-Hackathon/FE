@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://familog-be.onrender.com";
 
 export async function signUp(email, password, nickname) {
-  const res = await axios.post(`${BASE_URL}/auth/signup`, {
+  const res = await axios.post(`${BASE_URL}/users/signup`, {
     email,
     password,
     nickname
@@ -12,23 +12,9 @@ export async function signUp(email, password, nickname) {
 }
 
 export async function login(email, password) {
-  const res = await axios.post(`${BASE_URL}/auth/login`, {
+  const res = await axios.post(`${BASE_URL}/users/login`, {
     email,
     password
   });
   return res.data;
-}
-
-export async function checkEmail(email) {
-  const res = await axios.post(`${BASE_URL}/auth/email-check`, {
-    email
-  });
-  return res.data; // 예: { exists: true } 또는 { exists: false }
-}
-
-export async function checkPassword(password) {
-  const res = await axios.post(`${BASE_URL}/auth/password-check`, {
-    password
-  });
-  return res.data; // 예: { exists: true } 또는 { exists: false }
 }

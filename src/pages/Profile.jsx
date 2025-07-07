@@ -34,6 +34,7 @@ function Profile() {
   const handleLeave = () => {
     if (window.confirm("정말 회원 탈퇴 하시겠습니까?")) {
       localStorage.clear();
+      // 회원 정보 삭제
       navigate("/");
     }
   };
@@ -72,6 +73,7 @@ function Profile() {
             <div className="profile-info">
               <strong>{m.role} {m.name}님</strong>
               <p>{m.email}</p>
+
             </div>
           </div>
         ))}

@@ -11,6 +11,7 @@ function Family_Create() {
   const [showCode, setShowCode] = useState(false);
   const [message, setMessage] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
+  const navigate = useNavigate();
 
   const roles = [
     "엄마", "아빠", "딸", "아들",
@@ -19,6 +20,21 @@ function Family_Create() {
 
   const plants = ["방울 토마토", "해바라기", "딸기"];
 
+  const createFamily = async ({ name, code, plant, role, userId }) => {
+    const res = await axios.post("https://familog-be.onrender.com/families/", {
+      name,
+      code,
+      plant,
+      role,
+      user: userId,
+    });
+    return res.data;
+  };
+
+  const goHome = async() => {
+    navigate("/home");
+  }
+
   const handleSubmit = async () => {
     if (!selectedRole || !familyName || !selectedPlant) {
       setMessage("모든 항목을 입력해주세요.");
@@ -26,7 +42,7 @@ function Family_Create() {
       return;
     }
 
-        try {
+      try {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const userId = localStorage.getItem("userId");
 
@@ -37,6 +53,9 @@ function Family_Create() {
         role: selectedRole,
         userId
       });
+
+      localStorage.setItem("plant", res.plant);
+      localStorage.setItem("role", res.role);
 
       setGeneratedCode(res.code);
       setShowCode(true);
@@ -90,15 +109,21 @@ function Family_Create() {
           ))}
         </div>
 
+       {!showCode && (
         <button className="family-submit" onClick={handleSubmit}>
           완료
         </button>
+       )}
 
         {message && <p className="family-error">{message}</p>}
 
         {showCode && (
           <p className="family-code">🎉 가족 코드: <strong>{generatedCode}</strong></p>
         )}
+
+        <button className="family-home" onClick={goHome}>
+          홈으로
+        </button>
       </div>
     </div>
   );
