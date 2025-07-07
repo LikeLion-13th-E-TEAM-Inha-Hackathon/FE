@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Family_create.css";
+import "../styles/Family_Create.css";
 
 
 function Family_Create() {
