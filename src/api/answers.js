@@ -1,8 +1,8 @@
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://familog-be.onrender.com";
 
 // 답변 가져오기: questionId 기준
 export async function getAnswers(questionId) {
-  const res = await fetch(`${BASE_URL}/answers?questionId=${questionId}`);
+  const res = await fetch(`${BASE_URL}/questions/${questionId}/answers`);
   if (!res.ok) {
     throw new Error("답변 가져오기 실패");
   }

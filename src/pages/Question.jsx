@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   getTodayQuestion,
-//   getCompletedQuestions,
 } from "../api/questions.js"; // 오늘의 질문 관련
 import {
   postAnswer,
@@ -9,11 +8,15 @@ import {
 } from "../api/answers.js"; // 답변 관련
 import { addFamilyPoints } from "../api/points.js"; // 포인트 관련
 
-function Question({ userId, nickname, familyCode }) {
+function Question() {
   const [question, setQuestion] = useState(null);         // 오늘의 질문
   const [answers, setAnswers] = useState([]);             // 가족 답변 리스트
   const [myAnswer, setMyAnswer] = useState("");           // 내 답변 입력값
   const [hasAnswered, setHasAnswered] = useState(false);  // 답변 완료 여부
+
+  const userId = localStorage.getItem("userId");
+  const nickname = localStorage.getItem("nickname");
+  const familyCode = localStorage.getItem("familyCode");
 
   // 오늘의 질문 + 가족 답변 fetch
   useEffect(() => {
@@ -32,7 +35,9 @@ function Question({ userId, nickname, familyCode }) {
       }
     }
 
-    fetchData();
+    if (familyCode && userId) {
+      fetchData();
+    }
   }, [familyCode, userId]);
 
   // 답변 제출 핸들러
@@ -40,8 +45,8 @@ function Question({ userId, nickname, familyCode }) {
     if (!myAnswer.trim()) return;
 
     try {
-      await postAnswer(question.id, myAnswer, nickname); // nickname 포함
-      await addFamilyPoints(familyCode, 50);                   // 포인트 +50
+      await postAnswer(question.id, myAnswer, nickname);      // nickname 포함
+      await addFamilyPoints(familyCode, 50);                  // 포인트 +50
 
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
@@ -120,4 +125,5 @@ function Question({ userId, nickname, familyCode }) {
 }
 
 export default Question;
+
 
