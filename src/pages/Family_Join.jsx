@@ -21,10 +21,9 @@ function Family_Join() {
   };
 
   // 가족 참여
-  const joinFamily = async ({ code, userId }) => {
+  const joinFamily = async ({ code }) => {
     return await axios.post(`https://familog-be.onrender.com/families/${code}/join`, {
-      familyCode: code,
-      userId: userId,
+      familyCode: code
     });
   };
 
