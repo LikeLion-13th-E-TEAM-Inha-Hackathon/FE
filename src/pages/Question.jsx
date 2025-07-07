@@ -113,7 +113,7 @@ function Question({ userId, nickname, familyCode }) {
           ))}
         </ul>
       ) : (
-        <p>아직 아무도 답변하지 않았어요!</p>
+        <p>아직 아무도 답변하지 않았어요!!</p>
       )}
     </div>
   );
