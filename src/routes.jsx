@@ -22,8 +22,8 @@ export default function AppRoutes() {
         <Route element={<HeaderLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/question" element={<Question familyCode="family001"/>} />
-          <Route path="/drawer" element={<Drawer familyCode="family001"/>} />
+          <Route path="/question" element={<Question/>} />
+          <Route path="/drawer" element={<Drawer/>} />
         </Route>
 
         {/*헤더가 필요없음*/}

@@ -72,7 +72,7 @@ function Family_Join() {
           value={inputCode}
           onChange={(e) => setInputCode(e.target.value)}
         />
-        <button className="join-button" onClick={handleSubmit}>
+        <button className="join-button" onClick={joinFamily}>
           참여하기
         </button>
         {error && <p className="join-error">{error}</p>}
