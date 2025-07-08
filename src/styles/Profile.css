@@ -145,3 +145,17 @@
   align-items: center;
   gap: 1rem;
 }
+
+.profile-out{
+  width: 70px;
+  height: 35px;
+  background-color: #96c95f;
+  color: #ffffff;
+  padding: 0.8rem;
+  font-size: 0.5rem;
+  border: none;
+  border-radius: 1000px;
+  font-weight: 600;
+  margin-left: 1rem;
+  cursor: pointer;
+}

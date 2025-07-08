@@ -9,11 +9,11 @@ function Family_Join() {
   const navigate = useNavigate();
 
   const checkFamilyCode = async (code) => {
-    const res = await  axios.post(`https://familog-be.onrender.com/families/${code}/join/`);
-    if (res.data.length > 0) {
+    const res = await axios.get(`https://familog-be.onrender.com/families/${code}/`);
+    if (res.data && res.data.name) {
       return {
         exists: true,
-        name: res.data[0].name,
+        name: res.data.name,
       };
     }
     return { exists: false };
@@ -22,7 +22,7 @@ function Family_Join() {
   const joinFamily = async ({ code, userId }) => {
     return await axios.post(`https://familog-be.onrender.com/families/${code}/join/`, {
       familyCode: code,
-      userId: userId,
+      userId: userId
     });
   };
 
