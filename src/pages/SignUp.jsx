@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { signUp } from "../api/auth";
 import "../styles/Login.css";
 
 function SignUp() {
@@ -24,26 +23,26 @@ const handleSignUp = async () => {
   }
 
     try {
-      const emailCheck = await checkEmail(email);
-      if (emailCheck.exists) {
-        setMessage("중복된 이메일입니다.");
-        return;
-      }
+      // 회원가입 요청
+      const response = await axios.post("https://familog-be.onrender.com/users/signup/", {
+        email,
+        password,
+        nickname
+      });
 
-      const pwCheck = await checkPassword(password);
-      if (pwCheck.exists) {
-        setMessage("중복된 비밀번호입니다.");
-        return;
-      }
+      const data = response.data;
 
-      const data = await signUp(email, password, nickname);
-      console.log("userId:", data.userId);
+      localStorage.setItem("nickname", nickname);
+
+      // 회원가입 성공 처리
       alert("회원가입 성공!");
       navigate("/login");
+
     } catch (err) {
-      setMessage("회원가입 실패");
+      console.error("회원가입 실패:", err.response?.data || err.message);
+      setMessage("회원가입 실패: 이미 존재하는 이메일이거나 서버 오류입니다.");
     }
-};
+  };
 
 
   return (

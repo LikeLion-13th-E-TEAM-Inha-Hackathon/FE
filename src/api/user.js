@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const BASE_URL = "https://familog-be.onrender.com";
+
 export const fetchUserInfo = async (userId) => {
   try {
     const response = await axios.get(`/users/${userId}`);

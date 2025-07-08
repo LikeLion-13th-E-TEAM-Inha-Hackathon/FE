@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/auth";
 import '../styles/Login.css'
 
 function Login(){
@@ -18,17 +17,30 @@ function Login(){
       return;
     }
 
-    try {
-      const data = await login(email, password);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("email", email);
-      navigate("/select");
+      try {
+      const response = await axios.post("https://familog-be.onrender.com/users/login/", {
+        email,
+        password
+      });
+
+      const data = response.data;
+
+      // 응답 형식에 따라 저장
+      localStorage.setItem("token", data.token);    // 백엔드가 token을 준다고 가정
+      localStorage.setItem("userId", data.userId);  // 또는 id 등
+
+      if (data.code) {
+        localStorage.setItem("familyCode", data.code);
+        navigate("/home");
+      } else {
+        navigate("/select")
+      }
+
     } catch (err) {
+      console.error("로그인 오류:", err);
       setMessage("로그인 실패 : 이메일 또는 비밀번호가 잘못되었습니다.");
     }
-
-    };
+  };
 
 
   return (

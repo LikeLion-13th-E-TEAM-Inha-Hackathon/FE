@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:4000";
+import axios from "axios";
+
+const BASE_URL = "https://familog-be.onrender.com";
 
 // 가족 포인트 조회
 export async function getFamilyPoints(familyCode) {

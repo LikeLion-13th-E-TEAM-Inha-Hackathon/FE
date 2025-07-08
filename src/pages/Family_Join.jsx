@@ -8,29 +8,57 @@ function Family_Join() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // 가족 코드 확인
+  const checkFamilyCode = async (code) => {
+    const res = await axios.get(`https://familog-be.onrender.com/families?code=${code}`);
+    if (res.data.length > 0) {
+      return {
+        exists: true,
+        name: res.data[0].name, // 가족 이름
+      };
+    }
+    return { exists: false };
+  };
+
+  // 가족 참여
+  const joinFamily = async ({ code, userId }) => {
+    return await axios.post(`https://familog-be.onrender.com/families?code=${code}/join`, {
+      familyCode: code,
+      userId: userId,
+    });
+  };
+
   const handleSubmit = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
-      setMessage("로그인이 필요합니다.");
+      setError("로그인이 필요합니다.");
       return;
     }
 
-    try {
+    const code = inputCode.trim();
+    if (!code) {
+      setError("가족 코드를 입력해주세요.");
+      return;
+    }
+
+      try {
       const check = await checkFamilyCode(code);
 
       if (!check.exists) {
-        setMessage("존재하지 않는 가족 코드입니다.");
+        setError("존재하지 않는 가족 코드입니다.");
         return;
       }
 
       await joinFamily({ code, userId });
+
       localStorage.setItem("familyCode", code);
       localStorage.setItem("familyName", check.name);
+      setError("");
       navigate("/home");
     } catch (err) {
+      console.error("가족 참여 실패:", err);
       setError("오류가 발생했습니다. 다시 시도해주세요.");
     }
-    
   };
 
   return (

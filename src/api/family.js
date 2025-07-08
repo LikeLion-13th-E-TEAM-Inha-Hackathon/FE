@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://familog-be.onrender.com";
 
 export const createFamily = async ({ name, code, plant, role, userId }) => {
   try {
