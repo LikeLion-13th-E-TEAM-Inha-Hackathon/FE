@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllQuestions } from "../api/questions";
 import { getAnswers } from "../api/answers";
 
-function Drawer({ familyCode }) {
+function Drawer({ code }) {
   const [history, setHistory] = useState([]); // 날짜별 질문+답변 리스트
   const [loading, setLoading] = useState(true);
 
@@ -11,7 +11,7 @@ function Drawer({ familyCode }) {
       try {
         const allQuestions = await getAllQuestions();
         const familyQuestions = allQuestions.filter(
-          (q) => q.familyCode === familyCode
+          (q) => q.code === code
         );
 
         // 날짜 내림차순 정렬
@@ -36,7 +36,7 @@ function Drawer({ familyCode }) {
     }
 
     fetchHistory();
-  }, [familyCode]);
+  }, [code]);
 
   return (
     <div style={{ padding: "24px", maxWidth: "700px", margin: "0 auto" }}>
