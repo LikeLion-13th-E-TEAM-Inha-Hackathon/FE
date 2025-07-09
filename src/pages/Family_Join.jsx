@@ -10,29 +10,33 @@ function Family_Join() {
 
   const checkFamilyCode = async (code) => {
     const res = await axios.get(`https://familog-be.onrender.com/families/${code}/`);
-    if (res.data && res.data.name) {
+    console.log("응답 데이터:", res.data);
+    if (res.data && res.data.code)  { // ✅ name으로 존재 확인
       return {
         exists: true,
-        name: res.data.name,
+        name: res.data.name,         // ✅ 가족 이름 저장
+        code: res.data.code,         // ✅ 가족 코드 저장
+        seeds: res.data.seeds        // ✅ 씨앗 수 저장 (필요시)
       };
     }
     return { exists: false };
   };
 
-  const joinFamily = async ({ code, userId }) => {
-    return await axios.post(`https://familog-be.onrender.com/families/${code}/join/`, {
-      familyCode: code,
-      userId: userId
-    });
+  const joinFamily = async (code) => {
+    const token = localStorage.getItem("access_token");
+    return await axios.post(
+      `https://familog-be.onrender.com/families/${code}/join/`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
   const handleSubmit = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      setError("로그인이 필요합니다.");
-      return;
-    }
-
     const code = inputCode.trim();
     if (!code || code === "undefined") {
       setError("가족 코드를 입력해주세요.");
@@ -41,16 +45,16 @@ function Family_Join() {
 
     try {
       const check = await checkFamilyCode(code);
-
       if (!check.exists) {
         setError("존재하지 않는 가족 코드입니다.");
         return;
       }
 
-      await joinFamily({ code, userId });
+      await joinFamily(code);
 
-      localStorage.setItem("familyCode", code);
-      localStorage.setItem("familyName", check.name);
+      localStorage.setItem("familyCode", check.code);     // ✅ code 저장
+      localStorage.setItem("familyName", check.name);     // ✅ name 저장
+      localStorage.setItem("familySeeds", check.seeds);   // ✅ seeds 저장 (선택)
       setError("");
       navigate("/home");
     } catch (err) {
