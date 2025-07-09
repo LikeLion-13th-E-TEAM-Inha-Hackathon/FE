@@ -54,7 +54,7 @@ function Family_Create() {
         userId
       });
 
-      localStorage.setItem("plant", res.plant);
+      localStorage.setItem("plantType", res.plant);
       localStorage.setItem("role", res.role);
 
       setGeneratedCode(res.code);
