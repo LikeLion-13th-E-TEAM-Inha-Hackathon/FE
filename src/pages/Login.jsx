@@ -12,6 +12,10 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    delete axios.defaults.headers.common['Authorization'];
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+
     if (!email || !password) {
       setMessage("이메일과 비밀번호를 모두 입력해주세요.");
       return;
@@ -70,7 +74,7 @@ function Login() {
         <button type="submit" className="login-button">로그인</button>
         {message && <p className="login-message">{message}</p>}
         <p className="signup-link" onClick={() => navigate('/signup')}>
-          아직 회원이 아니신가요? 회원가입 하기
+          아직 회원이 아니신가요? 회원 가입 하기
         </p>
       </form>
     </div>
