@@ -1,13 +1,13 @@
-// import axios from "axios";
+import axios from "axios";
 
-// const BASE_URL = "https://familog-be.onrender.com";
+const BASE_URL = "https://familog-be.onrender.com";
 
-// export const fetchUserInfo = async (userId) => {
-//   try {
-//     const response = await axios.get(`/users/${userId}`);
-//     return response.data; // { user, members, familyCode }
-//   } catch (error) {
-//     console.error("유저 정보 불러오기 실패", error);
-//     throw error;
-//   }
-// };
+export const fetchUserInfo = async (userId) => {
+  try {
+    const response = await axios.get(`/users/${userId}`);
+    return response.data; // { user, members, familyCode }
+  } catch (error) {
+    console.error("유저 정보 불러오기 실패", error);
+    throw error;
+  }
+};
