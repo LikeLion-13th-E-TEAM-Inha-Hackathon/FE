@@ -29,9 +29,10 @@ function Login() {
 
       const data = response.data;
 
-      // ✅ 응답 데이터 저장
+      // ✅ 응답 데이터 저장!
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("userId", data.userId);
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("email", data.email);
 
