@@ -121,9 +121,12 @@ function Family_Create() {
           <p className="family-code">🎉 가족 코드: <strong>{generatedCode}</strong></p>
         )}
 
-        <button className="family-home" onClick={goHome}>
-          홈으로
-        </button>
+        {showCode && (    
+          <button className="family-home" onClick={goHome}>
+            홈으로
+          </button>
+        )}
+
       </div>
     </div>
   );

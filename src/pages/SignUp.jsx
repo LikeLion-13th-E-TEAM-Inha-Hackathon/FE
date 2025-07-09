@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
@@ -11,16 +11,22 @@ function SignUp() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-const handleSignUp = async () => {
-  if (!nickname || !email || !password || !confirmPassword) {
-    setMessage("모든 칸을 입력해주세요.");
-    return;
-  }
+  useEffect(() => {
+    delete axios.defaults.headers.common["Authorization"];
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+  }, []);
 
-  if (password !== confirmPassword) {
-    setMessage("비밀번호가 일치하지 않습니다.");
-    return;
-  }
+  const handleSignUp = async () => {
+    if (!nickname || !email || !password || !confirmPassword) {
+      setMessage("모든 칸을 입력해주세요.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
     try {
       // 회원가입 요청
@@ -31,13 +37,11 @@ const handleSignUp = async () => {
       });
 
       const data = response.data;
-
-      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("nickname", data.nickname);
 
       // 회원가입 성공 처리
       alert("회원가입 성공!");
       navigate("/login");
-
     } catch (err) {
       console.error("회원가입 실패:", err.response?.data || err.message);
       setMessage("회원가입 실패: 이미 존재하는 이메일이거나 서버 오류입니다.");
