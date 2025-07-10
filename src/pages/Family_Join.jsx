@@ -50,16 +50,19 @@ function Family_Join() {
         return;
       }
 
-      // ✅ 2초 딜레이
-      await new Promise((res) => setTimeout(res, 2000));
-
       await joinFamily(code);
 
-      localStorage.setItem("familyCode", check.code);
+      // ✅ 키 통일
+      localStorage.setItem("code", check.code);
       localStorage.setItem("familyName", check.name);
-      localStorage.setItem("familySeeds", check.seeds);
-      setError("");
-      navigate("/home");
+      localStorage.setItem("seeds", check.seeds);
+
+      setError("잠시만 기다려주세요... 홈으로 이동 중입니다.");
+
+      // ✅ 5초 뒤 홈으로 이동
+      setTimeout(() => {
+        navigate("/home", { state: { code: check.code } });
+      }, 200);
     } catch (err) {
       console.error("가족 참여 실패:", err);
       setError("오류가 발생했습니다. 다시 시도해주세요.");

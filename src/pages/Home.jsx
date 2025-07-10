@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { getFamilyPoints, deductFamilyPoints } from "../api/points";
 import { getPlantStatus } from "../api/plant";
 import Footer from "../components/Footer";
@@ -15,6 +16,7 @@ import tomato3 from "../assets/tomato_stage3.png";
 import tomato4 from "../assets/tomato_stage4.png";
 
 function Home() {
+  const location = useLocation();
   const [code, setCode] = useState(null);
   const [seeds, setSeeds] = useState(0);
   const [growLevel, setGrowLevel] = useState(0);
@@ -23,13 +25,18 @@ function Home() {
   const [isWatering, setIsWatering] = useState(false);
   const [plantType, setPlantType] = useState("");
 
-  // 🔐 코드 로드
   useEffect(() => {
     const storedCode = localStorage.getItem("code");
-    if (storedCode) {
-      setCode(storedCode);
+    const fallbackCode = location.state?.code;
+    const finalCode = storedCode || fallbackCode;
+
+    if (finalCode) {
+      setCode(finalCode);
+      if (!storedCode) {
+        localStorage.setItem("code", finalCode); // ✅ 저장 보완
+      }
     }
-  }, []);
+  }, [location.state]);
 
   useEffect(() => {
     if (!code) return;
@@ -69,7 +76,6 @@ function Home() {
     }
 
     setIsWatering(true);
-
     setTimeout(async () => {
       try {
         const result = await deductFamilyPoints(code);
@@ -109,7 +115,6 @@ function Home() {
     setPlantStage(stage);
   };
 
-  // 🔐 렌더링 가드
   if (!code) {
     return (
       <div className="home-container">

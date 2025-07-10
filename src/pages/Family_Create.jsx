@@ -10,7 +10,7 @@ function Family_Create() {
   const [showCode, setShowCode] = useState(false);
   const [message, setMessage] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);  // ✅ 추가
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const roles = ["엄마", "아빠", "딸", "아들", "할머니", "할아버지", "손녀", "손자"];
@@ -28,7 +28,10 @@ function Family_Create() {
   };
 
   const goHome = () => {
-    navigate("/home");
+    setMessage("잠시만 기다려주세요... 홈으로 이동 중입니다.");
+    setTimeout(() => {
+      navigate("/home", { state: { code: generatedCode } }); // ✅ state로도 전달
+    }, 5000);
   };
 
   const handleSubmit = async () => {
@@ -38,13 +41,10 @@ function Family_Create() {
       return;
     }
 
-    setIsSubmitting(true); // ✅ 중복 방지
+    setIsSubmitting(true);
     try {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const userId = localStorage.getItem("userId");
-
-      // ✅ 2초 딜레이 추가
-      await new Promise((res) => setTimeout(res, 2000));
 
       const res = await createFamily({
         name: familyName,
@@ -56,7 +56,7 @@ function Family_Create() {
 
       localStorage.setItem("plant", res.plant);
       localStorage.setItem("role", res.role);
-      localStorage.setItem("familyCode", res.code);
+      localStorage.setItem("code", res.code); // ✅ 키 통일!
       localStorage.setItem("familyName", familyName);
 
       setGeneratedCode(res.code);
@@ -67,7 +67,7 @@ function Family_Create() {
       setMessage("가족 생성에 실패했습니다. 이미 존재하거나 오류가 발생했습니다.");
       setShowCode(false);
     } finally {
-      setIsSubmitting(false); // ✅ 완료 후 재활성화
+      setIsSubmitting(false);
     }
   };
 
@@ -111,7 +111,11 @@ function Family_Create() {
         </div>
 
         {!showCode && (
-          <button className="family-submit" onClick={handleSubmit} disabled={isSubmitting}>
+          <button
+            className="family-submit"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "생성 중..." : "완료"}
           </button>
         )}
