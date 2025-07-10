@@ -48,7 +48,7 @@ function Profile() {
 
     try {
       const userId = localStorage.getItem("userId");
-      await axios.delete(`https://familog-be.onrender.com/users/${userId}/`);
+      await axios.delete(`https://familog-be.onrender.com/users/${userId}/delete/`);
 
       alert("회원 탈퇴가 완료되었습니다.");
       localStorage.clear();
