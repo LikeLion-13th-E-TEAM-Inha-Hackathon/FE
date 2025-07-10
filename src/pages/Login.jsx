@@ -44,7 +44,9 @@ function Login() {
       console.log("로그인응답:",data);
       if (data.code) {
         localStorage.setItem("code", data.code);
-        navigate("/home");
+        setTimeout(() => {
+          navigate("/home");
+        }, 200);
       } else {
         navigate("/select")
       }
