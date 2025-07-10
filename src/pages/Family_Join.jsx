@@ -11,12 +11,12 @@ function Family_Join() {
   const checkFamilyCode = async (code) => {
     const res = await axios.get(`https://familog-be.onrender.com/families/${code}/`);
     console.log("응답 데이터:", res.data);
-    if (res.data && res.data.code)  { // ✅ name으로 존재 확인
+    if (res.data && res.data.code) {
       return {
         exists: true,
-        name: res.data.name,         // ✅ 가족 이름 저장
-        code: res.data.code,         // ✅ 가족 코드 저장
-        seeds: res.data.seeds        // ✅ 씨앗 수 저장 (필요시)
+        name: res.data.name,
+        code: res.data.code,
+        seeds: res.data.seeds,
       };
     }
     return { exists: false };
@@ -50,11 +50,14 @@ function Family_Join() {
         return;
       }
 
+      // ✅ 2초 딜레이
+      await new Promise((res) => setTimeout(res, 2000));
+
       await joinFamily(code);
 
-      localStorage.setItem("familyCode", check.code);     // ✅ code 저장
-      localStorage.setItem("familyName", check.name);     // ✅ name 저장
-      localStorage.setItem("familySeeds", check.seeds);   // ✅ seeds 저장 (선택)
+      localStorage.setItem("familyCode", check.code);
+      localStorage.setItem("familyName", check.name);
+      localStorage.setItem("familySeeds", check.seeds);
       setError("");
       navigate("/home");
     } catch (err) {
