@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getTodayQuestion } from "../api/questions.js";
 import { postAnswer, getAnswers } from "../api/answers.js";
 import { addFamilyPoints } from "../api/points.js";
+import Footer from "../components/Footer"; // ✅ 추가
 
 function Question() {
   const [question, setQuestion] = useState(null);
@@ -23,7 +24,7 @@ function Question() {
         const a = await getAnswers(q.id);
         setAnswers(a);
 
-        const mine = a.find((ans) => ans.memberId === userId);
+        const mine = a.find((ans) => String(ans.memberId) === String(userId));
         setHasAnswered(!!mine);
       } catch (err) {
         console.error("질문/답변 불러오기 실패:", err);
@@ -44,8 +45,7 @@ function Question() {
     }
 
     try {
-      await postAnswer(question.id, myAnswer);  // ✔️ 불필요한 인자 제거!
-
+      await postAnswer(question.id, myAnswer);
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
       setHasAnswered(true);
@@ -58,71 +58,76 @@ function Question() {
   };
 
   return (
-    <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
-      <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
-      {question ? (
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f0f0f0",
-            borderRadius: "8px",
-            marginBottom: "24px",
-            fontSize: "18px",
-          }}
-        >
-          {question.content}
-        </div>
-      ) : (
-        <p>질문을 불러오는 중...</p>
-      )}
-
-      {hasAnswered ? (
-        <p style={{ color: "gray", marginBottom: "32px" }}>
-          이미 답변을 완료했어요.
-        </p>
-      ) : (
-        <div style={{ marginBottom: "32px" }}>
-          <textarea
-            value={myAnswer}
-            onChange={(e) => setMyAnswer(e.target.value)}
-            placeholder={`${nickname}님의 답변을 입력하세요`}
-            rows={3}
-            style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
-          />
-          <button
-            onClick={handleSubmit}
+    <>
+      <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
+        <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
+        {question ? (
+          <div
             style={{
-              marginTop: "8px",
-              padding: "10px 16px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
+              padding: "16px",
+              backgroundColor: "#f0f0f0",
+              borderRadius: "8px",
+              marginBottom: "24px",
+              fontSize: "18px",
             }}
           >
-            제출하기 (+50P)
-          </button>
-        </div>
-      )}
+            {question.content}
+          </div>
+        ) : (
+          <p>질문을 불러오는 중...</p>
+        )}
 
-      <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
-      {answers.length > 0 ? (
-        <ul style={{ paddingLeft: "16px" }}>
-          {answers.map((ans, i) => (
-            <li key={i}>
-              <strong>{ans.nickname}</strong>: {ans.content}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>아직 아무도 답변하지 않았어요!!</p>
-      )}
-    </div>
+        {hasAnswered ? (
+          <p style={{ color: "gray", marginBottom: "32px" }}>
+            이미 답변을 완료했어요.
+          </p>
+        ) : (
+          <div style={{ marginBottom: "32px" }}>
+            <textarea
+              value={myAnswer}
+              onChange={(e) => setMyAnswer(e.target.value)}
+              placeholder={`${nickname}님의 답변을 입력하세요`}
+              rows={3}
+              style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
+            />
+            <button
+              onClick={handleSubmit}
+              style={{
+                marginTop: "8px",
+                padding: "10px 16px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              제출하기 (+50P)
+            </button>
+          </div>
+        )}
+
+        <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
+        {answers.length > 0 ? (
+          <ul style={{ paddingLeft: "16px" }}>
+            {answers.map((ans, i) => (
+              <li key={i}>
+                <strong>{ans.nickname}</strong>: {ans.content}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>아직 아무도 답변하지 않았어요!!</p>
+        )}
+      </div>
+
+      <Footer /> {/* ✅ 하단에 추가 */}
+    </>
   );
 }
 
 export default Question;
+
 
 
 

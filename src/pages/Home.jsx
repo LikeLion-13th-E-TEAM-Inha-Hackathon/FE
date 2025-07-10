@@ -15,17 +15,24 @@ import tomato3 from "../assets/tomato_stage3.png";
 import tomato4 from "../assets/tomato_stage4.png";
 
 function Home() {
+  const [code, setCode] = useState(null);
   const [seeds, setSeeds] = useState(0);
   const [growLevel, setGrowLevel] = useState(0);
   const [plantImage, setPlantImage] = useState(stage1);
   const [plantStage, setPlantStage] = useState(1);
   const [isWatering, setIsWatering] = useState(false);
-  const [plantType, setPlantType] = useState(""); // sunflower, tomato, strawberry
+  const [plantType, setPlantType] = useState("");
 
-  const code = localStorage.getItem("code");
+  // 🔐 코드 로드
+  useEffect(() => {
+    const storedCode = localStorage.getItem("code");
+    if (storedCode) {
+      setCode(storedCode);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!code) return; // ✅ code 없으면 fetch하지 않음
+    if (!code) return;
     fetchPoints();
     fetchPlantStatus();
   }, [code]);
@@ -39,7 +46,7 @@ function Home() {
   const fetchPoints = async () => {
     try {
       const data = await getFamilyPoints(code);
-      setSeeds(data.seeds ?? 0); // ✅ null 대비
+      setSeeds(data.seeds ?? 0);
     } catch (err) {
       console.error("포인트 불러오기 실패:", err);
     }
@@ -48,7 +55,7 @@ function Home() {
   const fetchPlantStatus = async () => {
     try {
       const data = await getPlantStatus(code);
-      setGrowLevel(data.growLevel ?? 0); // ✅ 0도 유효하게
+      setGrowLevel(data.growLevel ?? 0);
       setPlantType(data.type || "");
     } catch (err) {
       console.error("식물 상태 불러오기 실패:", err);
@@ -65,9 +72,9 @@ function Home() {
 
     setTimeout(async () => {
       try {
-        const result = await deductFamilyPoints(code); // POST /plant/water
+        const result = await deductFamilyPoints(code);
         setSeeds(result.seeds ?? 0);
-        setGrowLevel(result.growLevel ?? 0); // ✅ 0도 포함
+        setGrowLevel(result.growLevel ?? 0);
       } catch (err) {
         console.error("물주기 실패:", err);
       } finally {
@@ -102,12 +109,12 @@ function Home() {
     setPlantStage(stage);
   };
 
-  // ✅ code 없을 때는 렌더링 방어
+  // 🔐 렌더링 가드
   if (!code) {
     return (
       <div className="home-container">
         <h2>🏡 가족 홈</h2>
-        <p>가족 코드 정보를 불러오고 있어요... ⏳</p>
+        <p>가족 정보를 불러오는 중입니다... ⏳</p>
       </div>
     );
   }
@@ -132,6 +139,8 @@ function Home() {
       <button className="water-btn" onClick={handleWater}>
         💧 물주기 (-100P)
       </button>
+
+      <Footer />
     </div>
   );
 }
