@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getTodayQuestion } from "../api/questions.js";
 import { postAnswer, getAnswers } from "../api/answers.js";
-import Footer from "../components/Footer"; // ✅ Footer 추가
+import { addFamilyPoints } from "../api/points.js";
+import Footer from "../components/Footer"; // ✅ 추가
 
 function Question() {
   const [question, setQuestion] = useState(null);
@@ -24,7 +25,7 @@ function Question() {
         setAnswers(a);
 
         const mine = a.find((ans) => String(ans.memberId) === String(userId));
-        setHasAnswered(Boolean(mine));
+        setHasAnswered(!!mine);
       } catch (err) {
         console.error("질문/답변 불러오기 실패:", err);
       }
@@ -45,12 +46,10 @@ function Question() {
 
     try {
       await postAnswer(question.id, myAnswer);
-      setHasAnswered(true); // ✅ 바로 상태 반영
-      setMyAnswer("");       // ✅ 입력창 초기화
-
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
-
+      setHasAnswered(true);
+      setMyAnswer("");
       alert("답변이 저장되었고, 50포인트를 획득했어요!");
     } catch (err) {
       console.error("답변 제출 실패:", err);
@@ -62,7 +61,6 @@ function Question() {
     <>
       <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
         <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
-
         {question ? (
           <div
             style={{
@@ -79,41 +77,35 @@ function Question() {
           <p>질문을 불러오는 중...</p>
         )}
 
-        <div style={{ marginBottom: "32px" }}>
-          <textarea
-            value={myAnswer}
-            onChange={(e) => setMyAnswer(e.target.value)}
-            placeholder={
-              hasAnswered
-                ? `${nickname}님은 이미 답변하셨어요`
-                : `${nickname}님의 답변을 입력하세요`
-            }
-            rows={3}
-            disabled={hasAnswered}
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "6px",
-              backgroundColor: hasAnswered ? "#eee" : "#fff",
-              resize: "none",
-            }}
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={hasAnswered || !myAnswer.trim()}
-            style={{
-              marginTop: "8px",
-              padding: "10px 16px",
-              backgroundColor: hasAnswered ? "gray" : "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: hasAnswered ? "default" : "pointer",
-            }}
-          >
-            {hasAnswered ? "이미 제출 완료" : "제출하기 (+50P)"}
-          </button>
-        </div>
+        {hasAnswered ? (
+          <p style={{ color: "gray", marginBottom: "32px" }}>
+            이미 답변을 완료했어요.
+          </p>
+        ) : (
+          <div style={{ marginBottom: "32px" }}>
+            <textarea
+              value={myAnswer}
+              onChange={(e) => setMyAnswer(e.target.value)}
+              placeholder={`${nickname}님의 답변을 입력하세요`}
+              rows={3}
+              style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
+            />
+            <button
+              onClick={handleSubmit}
+              style={{
+                marginTop: "8px",
+                padding: "10px 16px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              제출하기 (+50P)
+            </button>
+          </div>
+        )}
 
         <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
         {answers.length > 0 ? (
@@ -129,9 +121,15 @@ function Question() {
         )}
       </div>
 
-      <Footer />
+      <Footer /> {/* ✅ 하단에 추가 */}
     </>
   );
 }
 
 export default Question;
+
+
+
+
+
+
