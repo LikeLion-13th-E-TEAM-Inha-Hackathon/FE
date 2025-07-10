@@ -12,29 +12,27 @@ function Profile() {
   const [code, setCode] = useState("");
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    const codeFromStorage = localStorage.getItem("familyCode");
+  const userId = localStorage.getItem("userId");
 
-    if (!userId || !codeFromStorage) return;
+  if (!userId) return;
 
-    fetchUserInfo(userId)
-      .then((data) => {
-        // ✅ 응답이 바로 members 배열이라면
-        if (Array.isArray(data)) {
-          setMembers(data);
-        } else {
-          console.error("Unexpected user data format:", data);
-        }
+  fetchUserInfo(userId)
+    .then((data) => {
+      if (Array.isArray(data.members)) {
+        setMembers(data.members);
+      }
 
-        setCode(codeFromStorage);
-        setUser({
-          nickname: "내 프로필", // ✅ name → nickname
-          email: "",
-          family: codeFromStorage,
-        });
-      })
-      .catch((err) => console.error("유저 정보 불러오기 실패:", err));
-  }, []);
+      setUser({
+        nickname: data.nickname,
+        email: data.email,
+        familyName: data.familyName,
+      });
+
+      setCode(data.code); // 또는 data.code 생략 가능
+    })
+    .catch((err) => console.error("유저 정보 불러오기 실패:", err));
+}, []);
+
 
   const handleLogout = () => {
     if (window.confirm("정말 로그아웃 하시겠습니까?")) {
@@ -67,7 +65,7 @@ function Profile() {
   };
 
   const handleOut = async (memberId) => {
-    const code = localStorage.getItem("familyCode");
+    const code = localStorage.getItem("code");
 
     if (!window.confirm("정말 이 구성원을 가족에서 추방하시겠습니까?")) return;
 
@@ -90,7 +88,7 @@ function Profile() {
       <div className="profile-left">
         <img src={pro} alt="profile-user" className="profile-user" />
         <div className="profile-info">
-          <strong>{user.family} 가족 {user.nickname}님</strong>
+          <strong>{user.familyName} 가족 {user.nickname}님</strong>
           <p>{user.email}</p>
         </div>
 

@@ -35,10 +35,12 @@ function Login() {
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("email", data.email);
+      localStorage.setItem("familyName", data.familyName);
+    
 
       // ✅ axios 기본 헤더 설정 (다음 요청부터 인증 포함)
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-
+      console.log("로그인응답:",data);
       if (data.code) {
         localStorage.setItem("code", data.code);
         navigate("/home");
