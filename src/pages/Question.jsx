@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTodayQuestion } from "../api/questions.js";
 import { postAnswer, getAnswers } from "../api/answers.js";
-import { addFamilyPoints } from "../api/points.js";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer"; // ✅ 추가
 
 function Question() {
   const [question, setQuestion] = useState(null);
@@ -10,45 +9,33 @@ function Question() {
   const [myAnswer, setMyAnswer] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
 
-  const [userId, setUserId] = useState(null);
-  const [code, setCode] = useState(null);
   const nickname = localStorage.getItem("nickname");
+  const code = localStorage.getItem("code");
 
   useEffect(() => {
-    const uid = localStorage.getItem("userId");
-    const c = localStorage.getItem("code");
-    if (uid) setUserId(uid);
-    if (c) setCode(c);
-  }, []);
+  async function fetchData() {
+    try {
+      const q = await getTodayQuestion(code);
+      if (!q?.id) throw new Error("질문 ID가 없습니다.");
+      setQuestion(q);
 
-  useEffect(() => {
-    if (!code || !userId) return;
+      const a = await getAnswers(q.id);
+      setAnswers(a);
 
-    async function fetchData() {
-      try {
-        const q = await getTodayQuestion(code);
-        if (!q?.id) throw new Error("질문 ID가 없습니다.");
-        setQuestion(q);
-
-        const a = await getAnswers(q.id);
-        setAnswers(a);
-
-        const mine = a.find((ans) => String(ans.memberId) === String(userId));
-        setHasAnswered(!!mine);
-      } catch (err) {
-        console.error("질문/답변 불러오기 실패:", err);
-      }
+      // ✅ 닉네임으로 내가 작성한 답변 있는지 판별
+      const mine = a.find((ans) => ans.nickname === nickname);
+      setHasAnswered(!!mine);
+    } catch (err) {
+      console.error("질문/답변 불러오기 실패:", err);
     }
+  }
 
+  if (code && nickname) {
     fetchData();
-  }, [code, userId]);
+  }
+}, [code, nickname]);
 
   const handleSubmit = async () => {
-    if (hasAnswered) {
-      alert("이미 답변하셨습니다.");
-      return;
-    }
-
     if (!myAnswer.trim()) return;
 
     if (!question || !question.id) {
@@ -60,11 +47,8 @@ function Question() {
       await postAnswer(question.id, myAnswer);
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
-
-      const mine = updatedAnswers.find((ans) => String(ans.memberId) === String(userId));
-      setHasAnswered(!!mine);
+      setHasAnswered(true);
       setMyAnswer("");
-
       alert("답변이 저장되었고, 50포인트를 획득했어요!");
     } catch (err) {
       console.error("답변 제출 실패:", err);
@@ -76,7 +60,6 @@ function Question() {
     <>
       <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
         <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
-
         {question ? (
           <div
             style={{
@@ -93,29 +76,35 @@ function Question() {
           <p>질문을 불러오는 중...</p>
         )}
 
-        <div style={{ marginBottom: "32px" }}>
-          <textarea
-            value={myAnswer}
-            onChange={(e) => setMyAnswer(e.target.value)}
-            placeholder={`${nickname}님의 답변을 입력하세요`}
-            rows={3}
-            style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
-          />
-          <button
-            onClick={handleSubmit}
-            style={{
-              marginTop: "8px",
-              padding: "10px 16px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            제출하기 (+50P)
-          </button>
-        </div>
+        {hasAnswered ? (
+          <p style={{ color: "gray", marginBottom: "32px" }}>
+            이미 답변을 완료했어요.
+          </p>
+        ) : (
+          <div style={{ marginBottom: "32px" }}>
+            <textarea
+              value={myAnswer}
+              onChange={(e) => setMyAnswer(e.target.value)}
+              placeholder={`${nickname}님의 답변을 입력하세요`}
+              rows={3}
+              style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
+            />
+            <button
+              onClick={handleSubmit}
+              style={{
+                marginTop: "8px",
+                padding: "10px 16px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              제출하기 (+50P)
+            </button>
+          </div>
+        )}
 
         <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
         {answers.length > 0 ? (
@@ -131,9 +120,15 @@ function Question() {
         )}
       </div>
 
-      <Footer />
+      <Footer /> {/* ✅ 하단에 추가 */}
     </>
   );
 }
 
 export default Question;
+
+
+
+
+
+
