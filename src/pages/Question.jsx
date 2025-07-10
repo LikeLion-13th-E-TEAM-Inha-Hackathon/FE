@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getTodayQuestion } from "../api/questions.js";
 import { postAnswer, getAnswers } from "../api/answers.js";
 import { addFamilyPoints } from "../api/points.js";
-import Footer from "../components/Footer"; // ✅ 추가
+import Footer from "../components/Footer";
 
 function Question() {
   const [question, setQuestion] = useState(null);
@@ -10,34 +10,40 @@ function Question() {
   const [myAnswer, setMyAnswer] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
 
-  const userId = localStorage.getItem("userId");
+  const [userId, setUserId] = useState(null);
+  const [code, setCode] = useState(null);
   const nickname = localStorage.getItem("nickname");
-  const code = localStorage.getItem("code");
 
+  // ✅ localStorage 값 안전하게 불러오기
   useEffect(() => {
-  async function fetchData() {
-    try {
-      const q = await getTodayQuestion(code);
-      if (!q?.id) throw new Error("질문 ID가 없습니다.");
-      setQuestion(q);
+    const uid = localStorage.getItem("userId");
+    const c = localStorage.getItem("code");
+    if (uid) setUserId(uid);
+    if (c) setCode(c);
+  }, []);
 
-      const a = await getAnswers(q.id);
-      setAnswers(a);
+  // ✅ 질문 및 답변 불러오기
+  useEffect(() => {
+    if (!code || !userId) return;
 
-      // 🔐 userId 비교 정확하게 숫자로 통일
-      const myId = parseInt(userId);
-      const mine = a.find((ans) => parseInt(ans.memberId) === myId);
+    async function fetchData() {
+      try {
+        const q = await getTodayQuestion(code);
+        if (!q?.id) throw new Error("질문 ID가 없습니다.");
+        setQuestion(q);
 
-      setHasAnswered(!!mine);  // ✅ 나의 답변 존재 여부
-    } catch (err) {
-      console.error("질문/답변 불러오기 실패:", err);
+        const a = await getAnswers(q.id);
+        setAnswers(a);
+
+        const mine = a.find((ans) => String(ans.memberId) === String(userId));
+        setHasAnswered(!!mine);
+      } catch (err) {
+        console.error("질문/답변 불러오기 실패:", err);
+      }
     }
-  }
 
-  if (code && userId) {
     fetchData();
-  }
-}, [code, userId]);
+  }, [code, userId]);
 
   const handleSubmit = async () => {
     if (!myAnswer.trim()) return;
@@ -51,8 +57,11 @@ function Question() {
       await postAnswer(question.id, myAnswer);
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
-      setHasAnswered(true);
+
+      const mine = updatedAnswers.find((ans) => String(ans.memberId) === String(userId));
+      setHasAnswered(!!mine);
       setMyAnswer("");
+
       alert("답변이 저장되었고, 50포인트를 획득했어요!");
     } catch (err) {
       console.error("답변 제출 실패:", err);
@@ -64,6 +73,7 @@ function Question() {
     <>
       <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
         <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
+
         {question ? (
           <div
             style={{
@@ -124,15 +134,9 @@ function Question() {
         )}
       </div>
 
-      <Footer /> {/* ✅ 하단에 추가 */}
+      <Footer />
     </>
   );
 }
 
 export default Question;
-
-
-
-
-
-
