@@ -31,7 +31,7 @@ function Family_Create() {
     setMessage("잠시만 기다려주세요... 홈으로 이동 중입니다.");
     setTimeout(() => {
       navigate("/home", { state: { code: generatedCode } }); // ✅ state로도 전달
-    }, 5000);
+    }, 500);
   };
 
   const handleSubmit = async () => {

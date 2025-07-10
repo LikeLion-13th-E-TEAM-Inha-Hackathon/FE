@@ -62,7 +62,7 @@ function Family_Join() {
       // ✅ 5초 뒤 홈으로 이동
       setTimeout(() => {
         navigate("/home", { state: { code: check.code } });
-      }, 200);
+      }, 500);
     } catch (err) {
       console.error("가족 참여 실패:", err);
       setError("오류가 발생했습니다. 다시 시도해주세요.");

@@ -50,7 +50,7 @@ function Login() {
         } else {
           navigate("/select");
         }
-      }, 1000); // 지연 주면 초기 렌더 타이밍 문제 해결
+      }, 500); // 지연 주면 초기 렌더 타이밍 문제 해결
 
     } catch (err) {
       console.error("로그인 오류:", err);
