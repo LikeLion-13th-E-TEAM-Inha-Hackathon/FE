@@ -46,7 +46,7 @@ function Login() {
         localStorage.setItem("code", data.code);
         setTimeout(() => {
           navigate("/home");
-        }, 200);
+        }, 1000);
       } else {
         navigate("/select")
       }
