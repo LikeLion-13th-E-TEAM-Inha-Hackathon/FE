@@ -14,7 +14,6 @@ function Question() {
   const [code, setCode] = useState(null);
   const nickname = localStorage.getItem("nickname");
 
-  // ✅ localStorage 값 안전하게 불러오기
   useEffect(() => {
     const uid = localStorage.getItem("userId");
     const c = localStorage.getItem("code");
@@ -22,7 +21,6 @@ function Question() {
     if (c) setCode(c);
   }, []);
 
-  // ✅ 질문 및 답변 불러오기
   useEffect(() => {
     if (!code || !userId) return;
 
@@ -46,6 +44,11 @@ function Question() {
   }, [code, userId]);
 
   const handleSubmit = async () => {
+    if (hasAnswered) {
+      alert("이미 답변하셨습니다.");
+      return;
+    }
+
     if (!myAnswer.trim()) return;
 
     if (!question || !question.id) {
@@ -90,35 +93,29 @@ function Question() {
           <p>질문을 불러오는 중...</p>
         )}
 
-        {hasAnswered ? (
-          <p style={{ color: "gray", marginBottom: "32px" }}>
-            이미 답변을 완료했어요.
-          </p>
-        ) : (
-          <div style={{ marginBottom: "32px" }}>
-            <textarea
-              value={myAnswer}
-              onChange={(e) => setMyAnswer(e.target.value)}
-              placeholder={`${nickname}님의 답변을 입력하세요`}
-              rows={3}
-              style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
-            />
-            <button
-              onClick={handleSubmit}
-              style={{
-                marginTop: "8px",
-                padding: "10px 16px",
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              제출하기 (+50P)
-            </button>
-          </div>
-        )}
+        <div style={{ marginBottom: "32px" }}>
+          <textarea
+            value={myAnswer}
+            onChange={(e) => setMyAnswer(e.target.value)}
+            placeholder={`${nickname}님의 답변을 입력하세요`}
+            rows={3}
+            style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
+          />
+          <button
+            onClick={handleSubmit}
+            style={{
+              marginTop: "8px",
+              padding: "10px 16px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            제출하기 (+50P)
+          </button>
+        </div>
 
         <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
         {answers.length > 0 ? (
