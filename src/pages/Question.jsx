@@ -15,26 +15,29 @@ function Question() {
   const code = localStorage.getItem("code");
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const q = await getTodayQuestion(code);
-        if (!q?.id) throw new Error("질문 ID가 없습니다.");
-        setQuestion(q);
+  async function fetchData() {
+    try {
+      const q = await getTodayQuestion(code);
+      if (!q?.id) throw new Error("질문 ID가 없습니다.");
+      setQuestion(q);
 
-        const a = await getAnswers(q.id);
-        setAnswers(a);
+      const a = await getAnswers(q.id);
+      setAnswers(a);
 
-        const mine = a.find((ans) => String(ans.memberId) === String(userId));
-        setHasAnswered(!!mine);
-      } catch (err) {
-        console.error("질문/답변 불러오기 실패:", err);
-      }
+      // 🔐 userId 비교 정확하게 숫자로 통일
+      const myId = parseInt(userId);
+      const mine = a.find((ans) => parseInt(ans.memberId) === myId);
+
+      setHasAnswered(!!mine);  // ✅ 나의 답변 존재 여부
+    } catch (err) {
+      console.error("질문/답변 불러오기 실패:", err);
     }
+  }
 
-    if (code && userId) {
-      fetchData();
-    }
-  }, [code, userId]);
+  if (code && userId) {
+    fetchData();
+  }
+}, [code, userId]);
 
   const handleSubmit = async () => {
     if (!myAnswer.trim()) return;
