@@ -36,6 +36,7 @@ function Login() {
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("email", data.email);
       localStorage.setItem("familyName", data.familyName);
+      localStorage.setItem("code",data.code)
     
 
       // ✅ axios 기본 헤더 설정 (다음 요청부터 인증 포함)

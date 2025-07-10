@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const BASE_URL = "https://familog-be.onrender.com";
 
 export const fetchUserInfo = async (userId) => {
@@ -8,8 +9,8 @@ export const fetchUserInfo = async (userId) => {
     const data = response.data;
 
     // 응답 데이터 구조에 맞게 접근!
-    localStorage.setItem("code", data.code);
-    localStorage.setItem("familyName", data.familyName); // ✅ 예: "강가네"
+    // localStorage.setItem("code", data.code);
+    //localStorage.setItem("familyName", data.familyName); // ✅ 예: "강가네"
 
     return data; // { nickname, email, code, familyname, members: [...] }
   } catch (error) {

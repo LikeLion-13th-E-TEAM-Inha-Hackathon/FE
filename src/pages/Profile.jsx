@@ -12,27 +12,28 @@ function Profile() {
   const [code, setCode] = useState("");
 
   useEffect(() => {
-  const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
+    const localFamilyName = localStorage.getItem("familyName");
 
-  if (!userId) return;
+    if (!userId) return;
 
-  fetchUserInfo(userId)
-    .then((data) => {
-      if (Array.isArray(data.members)) {
-        setMembers(data.members);
-      }
+    fetchUserInfo(userId)
+      .then((data) => {
+        if (Array.isArray(data.members)) {
+          setMembers(data.members);
+        }
 
-      setUser({
-        nickname: data.nickname,
-        email: data.email,
-        familyName: data.familyName,
-      });
+        // familyName이 백엔드 응답에 없으면 localStorage 값 사용
+        setUser({
+          nickname: data.nickname,
+          email: data.email,
+          familyName: data.familyName || localFamilyName || "우리",
+        });
 
-      setCode(data.code); // 또는 data.code 생략 가능
-    })
-    .catch((err) => console.error("유저 정보 불러오기 실패:", err));
-}, []);
-
+        setCode(data.code || localStorage.getItem("code") || "");
+      })
+      .catch((err) => console.error("유저 정보 불러오기 실패:", err));
+  }, []);
 
   const handleLogout = () => {
     if (window.confirm("정말 로그아웃 하시겠습니까?")) {
@@ -60,8 +61,12 @@ function Profile() {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    alert("가족 코드가 복사되었습니다!");
+    if (code) {
+      navigator.clipboard.writeText(code);
+      alert("가족 코드가 복사되었습니다!");
+    } else {
+      alert("복사할 가족 코드가 없습니다.");
+    }
   };
 
   const handleOut = async (memberId) => {
@@ -74,7 +79,7 @@ function Profile() {
         `https://familog-be.onrender.com/families/${code}/members/${memberId}/`
       );
       alert("구성원을 성공적으로 추방했습니다!");
-      window.location.reload(); // 새로고침
+      window.location.reload();
     } catch (err) {
       console.error("가족 추방 실패:", err);
       alert("구성원 추방에 실패했습니다.");
@@ -91,19 +96,18 @@ function Profile() {
           <strong>{user.familyName} 가족 {user.nickname}님</strong>
           <p>{user.email}</p>
         </div>
-
         <button onClick={handleLogout} className="profile-btn1">로그아웃</button>
         <button onClick={handleLeave} className="profile-btn2">회원 탈퇴</button>
       </div>
 
       <div className="profile-right">
         <div className="profile-code">
-          <span>{user.family} 가족</span>
+          <span>{user.familyName} 가족</span>
           <button onClick={handleCopy} className="profile-copy">가족 코드 복사</button>
         </div>
         <hr className="profile-divider" />
 
-        {Array.isArray(members) && members.length > 0 ? (
+        {members.length > 0 ? (
           members.map((m, i) => (
             <div className="profile-members" key={i}>
               <img src={pro} alt="profile-member" className="profile-member" />
