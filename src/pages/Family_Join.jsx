@@ -10,29 +10,33 @@ function Family_Join() {
 
   const checkFamilyCode = async (code) => {
     const res = await axios.get(`https://familog-be.onrender.com/families/${code}/`);
-    if (res.data && res.data.name) {
+    console.log("응답 데이터:", res.data);
+    if (res.data && res.data.code) {
       return {
         exists: true,
         name: res.data.name,
+        code: res.data.code,
+        seeds: res.data.seeds,
       };
     }
     return { exists: false };
   };
 
-  const joinFamily = async ({ code, userId }) => {
-    return await axios.post(`https://familog-be.onrender.com/families/${code}/join/`, {
-      familyCode: code,
-      userId: userId
-    });
+  const joinFamily = async (code) => {
+    const token = localStorage.getItem("access_token");
+    return await axios.post(
+      `https://familog-be.onrender.com/families/${code}/join/`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
   const handleSubmit = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      setError("로그인이 필요합니다.");
-      return;
-    }
-
     const code = inputCode.trim();
     if (!code || code === "undefined") {
       setError("가족 코드를 입력해주세요.");
@@ -41,18 +45,24 @@ function Family_Join() {
 
     try {
       const check = await checkFamilyCode(code);
-
       if (!check.exists) {
         setError("존재하지 않는 가족 코드입니다.");
         return;
       }
 
-      await joinFamily({ code, userId });
+      await joinFamily(code);
 
-      localStorage.setItem("familyCode", code);
+      // ✅ 키 통일
+      localStorage.setItem("code", check.code);
       localStorage.setItem("familyName", check.name);
-      setError("");
-      navigate("/home");
+      localStorage.setItem("seeds", check.seeds);
+
+      setError("잠시만 기다려주세요... 홈으로 이동 중입니다.");
+
+      // ✅ 5초 뒤 홈으로 이동
+      setTimeout(() => {
+        navigate("/home", { state: { code: check.code } });
+      }, 200);
     } catch (err) {
       console.error("가족 참여 실패:", err);
       setError("오류가 발생했습니다. 다시 시도해주세요.");

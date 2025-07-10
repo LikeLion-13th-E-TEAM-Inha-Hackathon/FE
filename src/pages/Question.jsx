@@ -1,53 +1,50 @@
 import { useEffect, useState } from "react";
-import {
-  getTodayQuestion,
-} from "../api/questions.js"; // 오늘의 질문 관련
-import {
-  postAnswer,
-  getAnswers,
-} from "../api/answers.js"; // 답변 관련
-import { addFamilyPoints } from "../api/points.js"; // 포인트 관련
+import { getTodayQuestion } from "../api/questions.js";
+import { postAnswer, getAnswers } from "../api/answers.js";
+import Footer from "../components/Footer"; // ✅ 추가
 
 function Question() {
-  const [question, setQuestion] = useState(null);         // 오늘의 질문
-  const [answers, setAnswers] = useState([]);             // 가족 답변 리스트
-  const [myAnswer, setMyAnswer] = useState("");           // 내 답변 입력값
-  const [hasAnswered, setHasAnswered] = useState(false);  // 답변 완료 여부
+  const [question, setQuestion] = useState(null);
+  const [answers, setAnswers] = useState([]);
+  const [myAnswer, setMyAnswer] = useState("");
+  const [hasAnswered, setHasAnswered] = useState(false);
 
-  const userId = localStorage.getItem("userId");
   const nickname = localStorage.getItem("nickname");
-  const familyCode = localStorage.getItem("familyCode");
+  const code = localStorage.getItem("code");
 
-  // 오늘의 질문 + 가족 답변 fetch
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const q = await getTodayQuestion(familyCode);
-        setQuestion(q);
+  async function fetchData() {
+    try {
+      const q = await getTodayQuestion(code);
+      if (!q?.id) throw new Error("질문 ID가 없습니다.");
+      setQuestion(q);
 
-        const a = await getAnswers(q.id);
-        setAnswers(a);
+      const a = await getAnswers(q.id);
+      setAnswers(a);
 
-        const mine = a.find((ans) => ans.memberId === userId);
-        setHasAnswered(!!mine);
-      } catch (err) {
-        console.error("데이터 불러오기 실패:", err);
-      }
+      // ✅ 닉네임으로 내가 작성한 답변 있는지 판별
+      const mine = a.find((ans) => ans.nickname === nickname);
+      setHasAnswered(!!mine);
+    } catch (err) {
+      console.error("질문/답변 불러오기 실패:", err);
     }
+  }
 
-    if (familyCode && userId) {
-      fetchData();
-    }
-  }, [familyCode, userId]);
+  if (code && nickname) {
+    fetchData();
+  }
+}, [code, nickname]);
 
-  // 답변 제출 핸들러
   const handleSubmit = async () => {
     if (!myAnswer.trim()) return;
 
-    try {
-      await postAnswer(question.id, myAnswer, nickname);      // nickname 포함
-      await addFamilyPoints(familyCode, 50);                  // 포인트 +50
+    if (!question || !question.id) {
+      alert("질문 정보가 없습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
 
+    try {
+      await postAnswer(question.id, myAnswer);
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
       setHasAnswered(true);
@@ -60,70 +57,78 @@ function Question() {
   };
 
   return (
-    <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
-      <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
-      {question ? (
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#f0f0f0",
-            borderRadius: "8px",
-            marginBottom: "24px",
-            fontSize: "18px",
-          }}
-        >
-          {question.content}
-        </div>
-      ) : (
-        <p>질문을 불러오는 중...</p>
-      )}
-
-      {hasAnswered ? (
-        <p style={{ color: "gray", marginBottom: "32px" }}>
-          이미 답변을 완료했어요.
-        </p>
-      ) : (
-        <div style={{ marginBottom: "32px" }}>
-          <textarea
-            value={myAnswer}
-            onChange={(e) => setMyAnswer(e.target.value)}
-            placeholder={`${nickname}님의 답변을 입력하세요`}
-            rows={3}
-            style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
-          />
-          <button
-            onClick={handleSubmit}
+    <>
+      <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
+        <h2 style={{ marginBottom: "16px" }}>📝 오늘의 질문</h2>
+        {question ? (
+          <div
             style={{
-              marginTop: "8px",
-              padding: "10px 16px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
+              padding: "16px",
+              backgroundColor: "#f0f0f0",
+              borderRadius: "8px",
+              marginBottom: "24px",
+              fontSize: "18px",
             }}
           >
-            제출하기 (+50P)
-          </button>
-        </div>
-      )}
+            {question.content}
+          </div>
+        ) : (
+          <p>질문을 불러오는 중...</p>
+        )}
 
-      <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
-      {answers.length > 0 ? (
-        <ul style={{ paddingLeft: "16px" }}>
-          {answers.map((ans, i) => (
-            <li key={i}>
-              <strong>{ans.nickname}</strong>: {ans.content}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>아직 아무도 답변하지 않았어요!!</p>
-      )}
-    </div>
+        {hasAnswered ? (
+          <p style={{ color: "gray", marginBottom: "32px" }}>
+            이미 답변을 완료했어요.
+          </p>
+        ) : (
+          <div style={{ marginBottom: "32px" }}>
+            <textarea
+              value={myAnswer}
+              onChange={(e) => setMyAnswer(e.target.value)}
+              placeholder={`${nickname}님의 답변을 입력하세요`}
+              rows={3}
+              style={{ width: "100%", padding: "10px", borderRadius: "6px" }}
+            />
+            <button
+              onClick={handleSubmit}
+              style={{
+                marginTop: "8px",
+                padding: "10px 16px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              제출하기 (+50P)
+            </button>
+          </div>
+        )}
+
+        <h3>👨‍👩‍👧‍👦 가족들의 답변</h3>
+        {answers.length > 0 ? (
+          <ul style={{ paddingLeft: "16px" }}>
+            {answers.map((ans, i) => (
+              <li key={i}>
+                <strong>{ans.nickname}</strong>: {ans.content}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>아직 아무도 답변하지 않았어요!!</p>
+        )}
+      </div>
+
+      <Footer /> {/* ✅ 하단에 추가 */}
+    </>
   );
 }
 
 export default Question;
+
+
+
+
 
 

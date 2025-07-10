@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Family_Create.css";
 
-
 function Family_Create() {
   const [selectedRole, setSelectedRole] = useState("");
   const [familyName, setFamilyName] = useState("");
@@ -11,14 +10,11 @@ function Family_Create() {
   const [showCode, setShowCode] = useState(false);
   const [message, setMessage] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const roles = [
-    "엄마", "아빠", "딸", "아들",
-    "할머니", "할아버지", "손녀", "손자"
-  ];
-
-  const plants = ["방울 토마토", "해바라기", "딸기"];
+  const roles = ["엄마", "아빠", "딸", "아들", "할머니", "할아버지", "손녀", "손자"];
+  const plants = ["tomato", "sunflower", "strawberry"];
 
   const createFamily = async ({ name, code, plant, role, userId }) => {
     const res = await axios.post("https://familog-be.onrender.com/families/", {
@@ -31,9 +27,12 @@ function Family_Create() {
     return res.data;
   };
 
-  const goHome = async() => {
-    navigate("/home");
-  }
+  const goHome = () => {
+    setMessage("잠시만 기다려주세요... 홈으로 이동 중입니다.");
+    setTimeout(() => {
+      navigate("/home", { state: { code: generatedCode } }); // ✅ state로도 전달
+    }, 5000);
+  };
 
   const handleSubmit = async () => {
     if (!selectedRole || !familyName || !selectedPlant) {
@@ -42,7 +41,8 @@ function Family_Create() {
       return;
     }
 
-      try {
+    setIsSubmitting(true);
+    try {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const userId = localStorage.getItem("userId");
 
@@ -51,23 +51,24 @@ function Family_Create() {
         code,
         plant: selectedPlant,
         role: selectedRole,
-        userId
+        userId,
       });
 
-      localStorage.setItem("plantType", res.plant);
+      localStorage.setItem("plant", res.plant);
       localStorage.setItem("role", res.role);
+      localStorage.setItem("code", res.code); // ✅ 키 통일!
+      localStorage.setItem("familyName", familyName);
 
       setGeneratedCode(res.code);
       setShowCode(true);
       setMessage("");
-      localStorage.setItem("familyCode", res.code);
-      localStorage.setItem("familyName", familyName);
     } catch (err) {
+      console.error("가족 생성 실패:", err);
       setMessage("가족 생성에 실패했습니다. 이미 존재하거나 오류가 발생했습니다.");
       setShowCode(false);
+    } finally {
+      setIsSubmitting(false);
     }
-    
-
   };
 
   return (
@@ -109,24 +110,27 @@ function Family_Create() {
           ))}
         </div>
 
-       {!showCode && (
-        <button className="family-submit" onClick={handleSubmit}>
-          완료
-        </button>
-       )}
+        {!showCode && (
+          <button
+            className="family-submit"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "생성 중..." : "완료"}
+          </button>
+        )}
 
         {message && <p className="family-error">{message}</p>}
 
         {showCode && (
-          <p className="family-code">🎉 가족 코드: <strong>{generatedCode}</strong></p>
+          <p className="family-code">
+            🎉 가족 코드: <strong>{generatedCode}</strong>
+          </p>
         )}
 
-        {showCode && (    
-          <button className="family-home" onClick={goHome}>
-            홈으로
-          </button>
-        )}
-
+        <button className="family-home" onClick={goHome}>
+          홈으로
+        </button>
       </div>
     </div>
   );

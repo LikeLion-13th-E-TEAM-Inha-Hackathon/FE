@@ -2,7 +2,12 @@ const BASE_URL = "https://familog-be.onrender.com";
 
 // 답변 가져오기: questionId 기준
 export async function getAnswers(questionId) {
-  const res = await fetch(`${BASE_URL}/questions/${questionId}/answers`);
+  const res = await fetch(`${BASE_URL}/questions/${questionId}/answers`, {
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+    },
+  });
+
   if (!res.ok) {
     throw new Error("답변 가져오기 실패");
   }
@@ -11,12 +16,16 @@ export async function getAnswers(questionId) {
   return Array.isArray(data) ? data : []; // 반드시 배열 반환
 }
 
-// 답변 작성하기
-export async function postAnswer(questionId, content, nickname, memberId) {
-  const res = await fetch(`${BASE_URL}/answers`, {
+// postAnswer 수정
+export async function postAnswer(questionId, content) {
+  const nickname = localStorage.getItem("nickname");
+  const memberId = localStorage.getItem("userId");
+
+  const res = await fetch(`${BASE_URL}/questions/${questionId}/answers`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({
       questionId,
@@ -26,9 +35,9 @@ export async function postAnswer(questionId, content, nickname, memberId) {
     }),
   });
 
-  if (!res.ok) {
-    throw new Error("답변 저장 실패");
-  }
+  if (!res.ok) throw new Error("답변 저장 실패");
 
   return await res.json();
 }
+
+
