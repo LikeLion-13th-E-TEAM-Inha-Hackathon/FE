@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://familog-be.onrender.com";
+const BASE_URL = "https:/familog-be.onrender.com";
 const DEFAULT_QUESTION = "오늘 가족 중 누가 가장 멋져 보였나요?";
 
 export async function getTodayQuestion(code) {

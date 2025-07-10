@@ -1,4 +1,4 @@
-const BASE_URL = "https://familog-be.onrender.com";
+const BASE_URL = "https:/familog-be.onrender.com";
 
 // 가족 포인트 조회
 export async function getFamilyPoints(code) {
@@ -20,22 +20,23 @@ export async function getFamilyPoints(code) {
 
 
 // 가족 포인트 추가 (amount 만큼 증가) → (예: 질문답변 후)
-export async function addFamilyPoints(code, userId, amount) {
-  const family = await getFamilyPoints(code);
-  const updatedSeeds = (family.seeds || 0) + amount;
 
-  const res = await fetch(`${BASE_URL}/questions/${userId}/answers`, {
+// 서버가 내부적으로 +50 처리하도록 요청만 보냄
+export async function addFamilyPoints(code,questionId) {
+  const res = await fetch(`${BASE_URL}/question/${questionId}/answers`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
-    body: JSON.stringify({ seeds: updatedSeeds }),
   });
 
-  if (!res.ok) throw new Error("가족 포인트 업데이트 실패");
-  return await res.json();
+  if (!res.ok) {
+    throw new Error("가족 포인트 증가 실패");
+  }
+
+  return await res.json(); // { seeds: 750 } 등 응답
 }
+
 
 // 가족 포인트 차감 + 물주기
 export async function deductFamilyPoints(code) {

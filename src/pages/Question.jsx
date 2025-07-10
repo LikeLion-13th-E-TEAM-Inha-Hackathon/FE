@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getTodayQuestion } from "../api/questions.js"; // 질문 관련
-import { postAnswer, getAnswers } from "../api/answers.js"; // 답변 관련
-import { addFamilyPoints } from "../api/points.js"; // 포인트 관련
+import { getTodayQuestion } from "../api/questions.js";
+import { postAnswer, getAnswers } from "../api/answers.js";
+import { addFamilyPoints } from "../api/points.js";
 
 function Question() {
   const [question, setQuestion] = useState(null);
@@ -45,7 +45,7 @@ function Question() {
 
     try {
       await postAnswer(question.id, myAnswer, nickname, userId);
-      await addFamilyPoints(code, 50);
+      await addFamilyPoints(code); // ✅ 수정된 부분 (amount 제거)
 
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
@@ -124,6 +124,7 @@ function Question() {
 }
 
 export default Question;
+
 
 
 
