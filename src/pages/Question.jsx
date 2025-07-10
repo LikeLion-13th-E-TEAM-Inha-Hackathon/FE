@@ -44,8 +44,7 @@ function Question() {
     }
 
     try {
-      await postAnswer(question.id, myAnswer, nickname, userId);
-      await addFamilyPoints(code); // ✅ 수정된 부분 (amount 제거)
+      await postAnswer(question.id, myAnswer);  // ✔️ 불필요한 인자 제거!
 
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
@@ -124,6 +123,7 @@ function Question() {
 }
 
 export default Question;
+
 
 
 

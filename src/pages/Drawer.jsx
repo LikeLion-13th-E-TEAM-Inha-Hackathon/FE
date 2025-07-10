@@ -2,14 +2,26 @@ import { useEffect, useState } from "react";
 import { getAllQuestions } from "../api/questions";
 import { getAnswers } from "../api/answers";
 
-function Drawer({ code }) {
+function Drawer() {
   const [history, setHistory] = useState([]); // 날짜별 질문+답변 리스트
   const [loading, setLoading] = useState(true);
+  const [code, setCode] = useState(null);
 
   useEffect(() => {
+    const storedCode = localStorage.getItem("code");
+    if (!storedCode) {
+      console.error("가족 코드 없음");
+      return;
+    }
+    setCode(storedCode);
+  }, []);
+
+  useEffect(() => {
+    if (!code) return;
+
     async function fetchHistory() {
       try {
-        const allQuestions = await getAllQuestions();
+        const allQuestions = await getAllQuestions(code);
         const familyQuestions = allQuestions.filter(
           (q) => q.code === code
         );
@@ -29,9 +41,10 @@ function Drawer({ code }) {
         );
 
         setHistory(combined);
-        setLoading(false);
       } catch (err) {
         console.error("히스토리 불러오기 실패:", err);
+      } finally {
+        setLoading(false);
       }
     }
 

@@ -25,9 +25,10 @@ function Home() {
   const code = localStorage.getItem("code");
 
   useEffect(() => {
+    if (!code) return; // ✅ code 없으면 fetch하지 않음
     fetchPoints();
     fetchPlantStatus();
-  }, []);
+  }, [code]);
 
   useEffect(() => {
     if (plantType) {
@@ -101,6 +102,16 @@ function Home() {
     setPlantStage(stage);
   };
 
+  // ✅ code 없을 때는 렌더링 방어
+  if (!code) {
+    return (
+      <div className="home-container">
+        <h2>🏡 가족 홈</h2>
+        <p>가족 코드 정보를 불러오고 있어요... ⏳</p>
+      </div>
+    );
+  }
+
   return (
     <div className="home-container">
       <h2>🏡 가족 홈</h2>
@@ -121,8 +132,6 @@ function Home() {
       <button className="water-btn" onClick={handleWater}>
         💧 물주기 (-100P)
       </button>
-
-      <Footer />
     </div>
   );
 }
