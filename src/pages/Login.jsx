@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import '../styles/Login.css';
+import "../styles/Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,7 +12,8 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    delete axios.defaults.headers.common['Authorization'];
+    // 기존 토큰 초기화
+    delete axios.defaults.headers.common["Authorization"];
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
 
@@ -24,33 +25,33 @@ function Login() {
     try {
       const response = await axios.post("https://familog-be.onrender.com/users/login/", {
         email,
-        password
+        password,
       });
 
       const data = response.data;
 
-      // ✅ 응답 데이터 저장!
+      // ✅ 응답 데이터 저장
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("email", data.email);
       localStorage.setItem("familyName", data.familyName);
-      localStorage.setItem("code",data.code)
-    
+      localStorage.setItem("code", data.code);
 
-      // ✅ axios 기본 헤더 설정 (다음 요청부터 인증 포함)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-      console.log("로그인응답:",data);
-      if (data.code) {
-        localStorage.setItem("code", data.code);
-        setTimeout(() => {
+      // ✅ axios 기본 헤더 설정
+      axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
+      console.log("로그인응답:", data);
+
+      // ✅ navigate를 100ms 딜레이 후 실행
+      setTimeout(() => {
+        if (data.code) {
           navigate("/home");
-        }, 1000);
-      } else {
-        navigate("/select")
-      }
-      
+        } else {
+          navigate("/select");
+        }
+      }, 1000); // 지연 주면 초기 렌더 타이밍 문제 해결
+
     } catch (err) {
       console.error("로그인 오류:", err);
       setMessage("로그인 실패 : 이메일 또는 비밀번호가 잘못되었습니다.");
@@ -79,7 +80,7 @@ function Login() {
         />
         <button type="submit" className="login-button">로그인</button>
         {message && <p className="login-message">{message}</p>}
-        <p className="signup-link" onClick={() => navigate('/signup')}>
+        <p className="signup-link" onClick={() => navigate("/signup")}>
           아직 회원이 아니신가요? 회원 가입 하기
         </p>
       </form>
