@@ -18,7 +18,7 @@ function Family_Create() {
     "할머니", "할아버지", "손녀", "손자"
   ];
 
-  const plants = ["방울 토마토", "해바라기", "딸기"];
+  const plants = ["tomato", "sunflower", "strawberry"];
 
   const createFamily = async ({ name, code, plant, role, userId }) => {
     const res = await axios.post("https://familog-be.onrender.com/families/", {
@@ -54,7 +54,7 @@ function Family_Create() {
         userId
       });
 
-      localStorage.setItem("plantType", res.plant);
+      localStorage.setItem("plant", res.plant);
       localStorage.setItem("role", res.role);
 
       setGeneratedCode(res.code);
@@ -121,12 +121,9 @@ function Family_Create() {
           <p className="family-code">🎉 가족 코드: <strong>{generatedCode}</strong></p>
         )}
 
-        {showCode && (    
-          <button className="family-home" onClick={goHome}>
-            홈으로
-          </button>
-        )}
-
+        <button className="family-home" onClick={goHome}>
+          홈으로
+        </button>
       </div>
     </div>
   );

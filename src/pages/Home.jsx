@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getFamilyPoints, deductFamilyPoints } from "../api/points";
+import { getPlantStatus } from "../api/plant";
 import Footer from "../components/Footer";
 import "../styles/Home.css";
 
-// 이미지들
 import windowBg from "../assets/window_shelf.png";
 import stage1 from "../assets/plant_stage1.png";
 import stage2 from "../assets/plant_stage2.png";
@@ -15,34 +15,47 @@ import tomato3 from "../assets/tomato_stage3.png";
 import tomato4 from "../assets/tomato_stage4.png";
 
 function Home() {
-  const [points, setPoints] = useState(0);
-  const [wateringCount, setWateringCount] = useState(0);
+  const [seeds, setSeeds] = useState(0);
+  const [growLevel, setGrowLevel] = useState(0);
   const [plantImage, setPlantImage] = useState(stage1);
   const [plantStage, setPlantStage] = useState(1);
   const [isWatering, setIsWatering] = useState(false);
+  const [plantType, setPlantType] = useState(""); // sunflower, tomato, strawberry
 
   const code = localStorage.getItem("code");
-  const plantType = localStorage.getItem("plantType"); // strawberry, tomato, sunflower
 
   useEffect(() => {
     fetchPoints();
+    fetchPlantStatus();
   }, []);
 
   useEffect(() => {
-    updatePlantImage();
-  }, [wateringCount]);
+    if (plantType) {
+      updatePlantImage(growLevel, plantType);
+    }
+  }, [growLevel, plantType]);
 
   const fetchPoints = async () => {
     try {
       const data = await getFamilyPoints(code);
-      setPoints(data.points || 0);
+      setSeeds(data.seeds ?? 0); // ✅ null 대비
     } catch (err) {
       console.error("포인트 불러오기 실패:", err);
     }
   };
 
+  const fetchPlantStatus = async () => {
+    try {
+      const data = await getPlantStatus(code);
+      setGrowLevel(data.growLevel ?? 0); // ✅ 0도 유효하게
+      setPlantType(data.type || "");
+    } catch (err) {
+      console.error("식물 상태 불러오기 실패:", err);
+    }
+  };
+
   const handleWater = async () => {
-    if (points < 100) {
+    if (seeds < 100) {
       alert("포인트가 부족합니다! 😢");
       return;
     }
@@ -51,9 +64,9 @@ function Home() {
 
     setTimeout(async () => {
       try {
-        await deductFamilyPoints(code, 100);
-        setPoints((prev) => prev - 100);
-        setWateringCount((prev) => prev + 1);
+        const result = await deductFamilyPoints(code); // POST /plant/water
+        setSeeds(result.seeds ?? 0);
+        setGrowLevel(result.growLevel ?? 0); // ✅ 0도 포함
       } catch (err) {
         console.error("물주기 실패:", err);
       } finally {
@@ -62,23 +75,26 @@ function Home() {
     }, 1000);
   };
 
-  const updatePlantImage = () => {
+  const updatePlantImage = (level, type) => {
     let img = stage1;
     let stage = 1;
 
-    if (wateringCount >= 3 && wateringCount < 5) {
+    if (level === 0) {
+      img = stage1;
+      stage = 1;
+    } else if (level === 1) {
       img = stage2;
       stage = 2;
-    } else if (wateringCount >= 5 && wateringCount < 7) {
+    } else if (level === 2) {
       stage = 3;
-      if (plantType === "sunflower") img = sunflower3;
-      else if (plantType === "strawberry") img = strawberry3;
-      else if (plantType === "tomato") img = tomato3;
-    } else if (wateringCount >= 7) {
+      if (type === "sunflower") img = sunflower3;
+      else if (type === "strawberry") img = strawberry3;
+      else if (type === "tomato") img = tomato3;
+    } else if (level === 3) {
       stage = 4;
-      if (plantType === "sunflower") img = sunflower4;
-      else if (plantType === "strawberry") img = strawberry4;
-      else if (plantType === "tomato") img = tomato4;
+      if (type === "sunflower") img = sunflower4;
+      else if (type === "strawberry") img = strawberry4;
+      else if (type === "tomato") img = tomato4;
     }
 
     setPlantImage(img);
@@ -89,7 +105,7 @@ function Home() {
     <div className="home-container">
       <h2>🏡 가족 홈</h2>
       <p className="point-display">
-        현재 가족 포인트: <strong>{points}P</strong>
+        현재 가족 포인트: <strong>{seeds}P</strong>
       </p>
 
       <div className="plant-scene">
@@ -105,9 +121,12 @@ function Home() {
       <button className="water-btn" onClick={handleWater}>
         💧 물주기 (-100P)
       </button>
+
+      <Footer />
     </div>
   );
 }
 
 export default Home;
+
 

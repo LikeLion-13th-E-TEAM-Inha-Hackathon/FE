@@ -1,28 +1,23 @@
 import { useEffect, useState } from "react";
-import {
-  getTodayQuestion,
-} from "../api/questions.js"; // 오늘의 질문 관련
-import {
-  postAnswer,
-  getAnswers,
-} from "../api/answers.js"; // 답변 관련
+import { getTodayQuestion } from "../api/questions.js"; // 질문 관련
+import { postAnswer, getAnswers } from "../api/answers.js"; // 답변 관련
 import { addFamilyPoints } from "../api/points.js"; // 포인트 관련
 
 function Question() {
-  const [question, setQuestion] = useState(null);         // 오늘의 질문
-  const [answers, setAnswers] = useState([]);             // 가족 답변 리스트
-  const [myAnswer, setMyAnswer] = useState("");           // 내 답변 입력값
-  const [hasAnswered, setHasAnswered] = useState(false);  // 답변 완료 여부
+  const [question, setQuestion] = useState(null);
+  const [answers, setAnswers] = useState([]);
+  const [myAnswer, setMyAnswer] = useState("");
+  const [hasAnswered, setHasAnswered] = useState(false);
 
   const userId = localStorage.getItem("userId");
   const nickname = localStorage.getItem("nickname");
-  const familyCode = localStorage.getItem("familyCode");
+  const code = localStorage.getItem("code");
 
-  // 오늘의 질문 + 가족 답변 fetch
   useEffect(() => {
     async function fetchData() {
       try {
-        const q = await getTodayQuestion(familyCode);
+        const q = await getTodayQuestion(code);
+        if (!q?.id) throw new Error("질문 ID가 없습니다.");
         setQuestion(q);
 
         const a = await getAnswers(q.id);
@@ -31,22 +26,26 @@ function Question() {
         const mine = a.find((ans) => ans.memberId === userId);
         setHasAnswered(!!mine);
       } catch (err) {
-        console.error("데이터 불러오기 실패:", err);
+        console.error("질문/답변 불러오기 실패:", err);
       }
     }
 
-    if (familyCode && userId) {
+    if (code && userId) {
       fetchData();
     }
-  }, [familyCode, userId]);
+  }, [code, userId]);
 
-  // 답변 제출 핸들러
   const handleSubmit = async () => {
     if (!myAnswer.trim()) return;
 
+    if (!question || !question.id) {
+      alert("질문 정보가 없습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+
     try {
-      await postAnswer(question.id, myAnswer, nickname);      // nickname 포함
-      await addFamilyPoints(familyCode, 50);                  // 포인트 +50
+      await postAnswer(question.id, myAnswer, nickname, userId);
+      await addFamilyPoints(code, 50);
 
       const updatedAnswers = await getAnswers(question.id);
       setAnswers(updatedAnswers);
@@ -125,5 +124,6 @@ function Question() {
 }
 
 export default Question;
+
 
 

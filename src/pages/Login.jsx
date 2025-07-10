@@ -40,7 +40,7 @@ function Login() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
 
       if (data.code) {
-        localStorage.setItem("familyCode", data.code);
+        localStorage.setItem("code", data.code);
         navigate("/home");
       } else {
         navigate("/select")
